@@ -1,0 +1,48 @@
+{% extends "muban.html" %}
+
+{% block title %}
+    主机信息列表
+{% endblock %}
+
+{% block content %}
+    <p class="nav-info">主机管理 > 主机列表</p>
+    <div class="host_list ">
+        <div class="func">
+             <a href="{% url "host_add" %}" class="btn btn-primary " role="button">增加主机</a>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+            <th>序号</th>
+            <th>主机名</th>
+            <th>主机IP</th>
+            <th>主机端口</th>
+            <th>主机机柜</th>
+            <th>创建时间</th>
+            <th>主机配置</th>
+            <th>主机组</th>
+            <th>操作</th>
+            </thead>
+            <tbody>
+            {% for host in hosts %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ host.hostname }}</td>
+                    <td>{{ host.ip }}</td>
+                    <td>{{ host.port }}</td>
+                    <td>{{ host.cabinet }}</td>
+                    <td>{{ host.ctime |date:"Y-m-d"}}</td>
+                    <td>{{ host.hostinfo }}</td>
+                    <td>{{ host.group.name }}</td>
+                    <td>
+                        <a href="/machine/host_edit-{{ host.id }}" class="btn btn-primary btn-sm " role="button">编辑</a>
+                        <a href="/machine/host_delete-{{ host.id }}" class="btn btn-success btn-sm " role="button">删除</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="clear"></div>
+    <div class="shade hide"></div>
+    <div class=""></div>
+{% endblock %}

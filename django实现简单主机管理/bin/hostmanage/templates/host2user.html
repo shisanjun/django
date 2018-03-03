@@ -1,0 +1,47 @@
+{% extends 'muban.html' %}
+{% block title %}
+    用户分配主机
+{% endblock %}
+
+{% block content %}
+    <div class="panel panel-info" style="width: 500px;margin: 100px">
+        <div class="panel-heading">
+            <div class="panel-title">用户分配主机</div>
+        </div>
+        <div class="panel-body">
+            <form action="{% url 'userhost' %}" method="post" class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-lg-4 text-right" for="username">用户名：</label>
+                    <div class="col-lg-8">
+                        <select name="username" class="form-control">
+                            {% for user_obj in user_objs %}
+                                <option value="{{ user_obj.id }}">{{ user_obj.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-4 text-right" for="hostip">输入IP地址：</label>
+                    <div class="col-lg-8">
+                        <input class="form-control" type="text" id="hostip" name="hostip">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-4 text-right" for="group">或选择主机所在组:</label>
+                    <div class="col-lg-8">
+                        <select name="hostgroup" class="form-control">
+                            {% for hostgroup_obj in hostgroup_objs %}
+                                <option value="{{ hostgroup_obj.id }}">{{ hostgroup_obj.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input class="col-lg-4 btn btn-success" type="submit" value="提交" style="margin-left: 150px; ">
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

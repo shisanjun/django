@@ -1,0 +1,76 @@
+.nav-info{
+    font-size: 16px;
+    font-weight: bold;
+    margin: 30px 20px;
+}
+.host_list{
+    margin-top: 30px;
+    padding: 0;
+}
+.func{
+    margin: 10px;
+}
+.host_add{
+    width: 500px;
+    height: 400px;
+    margin: 40px 0 0 150px;
+    border: 1px solid #528fc6;
+}
+
+.form-title{
+    font-size: 20px;
+    text-align: center;
+    height: 40px;
+    border-bottom: 2px solid #dddddd;
+    line-height: 40px;
+    color: #2aabd2;
+}
+.input-group{
+    float: left;
+    width: 400px;
+    margin-top: 10px;
+}
+.input-group label{
+    width: 80px;
+    text-align: right;
+}
+.input-group input{
+    width: 300px;
+}
+.input-group select{
+    width: 300px;
+    height: 30px;
+}
+.input-group input[type="submit"]{
+    float: left;
+    width: 80px;
+    margin: 10px 0 0 100px;
+    height: 40px;
+    background-color: #31b0d5;
+    border-radius: 10px;
+    color: white;
+    font-size: 18px;
+}
+.input-group a{
+    float: left;
+    width: 80px;
+    margin: 10px 0 0 20px;
+    height: 30px;
+    background-color: #31b0d5;
+    border-radius: 10px;
+    color: white;
+    font-size: 15px;
+}
+
+
+.show_div{
+    position: fixed;
+    top:50%;
+    left: 50%;
+    margin: -150px 0 0 -200px;
+    width: 500px;
+    /*height: 300px;*/
+    /*border: 1px solid #2aabd2;*/
+    /*background-color: white;*/
+    z-index: 12;
+}

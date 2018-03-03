@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--定义标题-->
+    <title>
+        {% block title %}{% endblock %}
+    </title></head>
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/static/css/other.css">
+    <!--子页面自定义css-->
+    {% block css %}{% endblock %}
+<body>
+    <div class="pg-header">
+        {% include "top.html" %}
+    </div>
+    <div class="pg-body">
+        <div class="menu">
+            {% include "left.html" %}
+        </div>
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="pg-footer"></div>
+    <script src="/static/js/jquery-1.12.4.js"></script>
+    <script src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <script src="/static/js/hostmanage.js"></script>
+    <!--子页面自定义js-->
+    {% block js %}{% endblock %}
+</body>
+</html>

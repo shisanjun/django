@@ -1,0 +1,47 @@
+{% extends "muban.html" %}
+{% block title %}
+    删除主机信息
+{% endblock %}
+
+{% block content %}
+    <div class="host_add">
+        <div class="form-title">
+            删除主机信息
+        </div>
+        <form action="{{ request.path_info }}" method="post">
+            <div class="input-group">
+                <label for="hostname">主机名：</label>
+                <input type="text" id="hostname" name="hostname" value="{{ host_obj.hostname }}">
+            </div>
+            <div class="input-group">
+                <label for="ip">IP地址：</label>
+                <input type="text" id="ip" name="ip" value="{{ host_obj.ip }}">
+            </div>
+            <div class="input-group">
+                <label for="port">主机端口：</label>
+                <input type="text" id="port" name="port" value="{{ host_obj.port }}">
+            </div>
+            <div class="input-group">
+                <label for="cabinet">机柜编号：</label>
+                <input type="text" id="cabinet" name="cabinet" value="{{ host_obj.cabinet }}">
+            </div>
+            <div class="input-group">
+                <label for="ctime">入库时间:</label>
+                <input type="text" id="ctime" name="ctime" value="{{ host_obj.ctime|date:"Y-m-d" }}">
+            </div>
+            <div class="input-group">
+                <label for="hostinfo">主机信息:</label>
+                <input type="text" id="hostinfo" name="hostinfo" value="{{ host_obj.hostinfo }}">
+            </div>
+            <div class="input-group">
+                <label for="group">主机所属组:</label>
+                <select name="group">
+                    <option value="{{ host_obj.group_id }}">{{ host_obj.group.name }}</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <input type="submit" value="确认删除">
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,62 @@
+<div class="user">
+    <i></i>
+    <div class="user-info">
+        <span>用户：{{request.session.username }}</span>
+        <span>角色：{{ request.session.role}}</span>
+    </div>
+</div>
+<div class="menu-items">
+    <div class="menu-item">
+        <div class="menu-header">
+            <i></i>
+            <span>主机管理</span></div>
+        <div class="menu-content">
+            <ul>
+                <li>
+
+                    <a href="{% url "host" %}">
+                        <i></i>
+                        <span>主机管理</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url "hostgroup" %}">
+                        <i></i>
+                        <span>主机组管理</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="menu-item">
+        <div class="menu-header">
+            <i></i>
+            <span>用户管理</span></div>
+        <div class="menu-content">
+            <ul>
+                <li>
+                    <a href="{% url "user" %}">
+                        <i></i>
+                        <span>用户管理</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url "usergroup" %}">
+                        <i></i>
+                        <span>用户组管理</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'userhost' %}">
+                        <i></i>
+                        <span>用户申请管理主机</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>

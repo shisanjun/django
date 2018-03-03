@@ -1,0 +1,86 @@
+{% extends "muban.html" %}
+
+{% block title %}
+    用户列表
+{% endblock %}
+
+{% block content %}
+    <p class="nav-info">用户管理 > 用户列表</p>
+    <div class="host_list ">
+        <div class="func">
+            <a id="usergroup_add" class="btn btn-primary " role="button">增加角色</a>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+            <th>序号</th>
+            <th>ID</th>
+            <th>用户角色名</th>
+            <th>操作</th>
+            </thead>
+            <tbody>
+            {% for user_group in user_groups %}
+                <tr uid="{{ user_group.id }}" id="tr_user_id">
+                    <td>{{ forloop.counter }}</td>
+                    <td target="id" id="user_id">{{ user_group.id }}</td>
+                    <td target="gname">{{ user_group.name }}</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm usergroup_edit_a" role="button">ajax编辑</a>
+                        <a class="btn btn-success btn-sm usergroup_delete_a" role="button">ajax删除</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="clear"></div>
+    <div class="shade hide"></div>
+    <div class="usergroup_add_div hide show_div">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                增加角色
+                <span class="tools pull-right">
+                    <a href="javascript:;" class="fa fa-chevron-down"></a>
+                    <a id="close_div" class="fa fa-times" style="cursor: pointer">X</a>
+                 </span>
+            </div>
+            <div class="panel-body">
+                <form action="{% url "usergroup" %}" method="post" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-lg-3" for="gname">角色名：</label>
+                        <div class="col-lg-6">
+                            <input class="form-control" type="text" id="gname" name="gname">
+                        </div>
+                        <div class="col-lg-2">
+                            <input class="form-control btn btn-success" type="submit" value="提交">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="usergroup_edit_div hide show_div">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                修改角色
+                <span class="tools pull-right">
+                    <a href="javascript:;" class="fa fa-chevron-down"></a>
+                    <a id="close_div" class="fa fa-times" style="cursor: pointer">X</a>
+                 </span>
+            </div>
+            <div class="panel-body">
+                <form id="user_edit_form" method="post" class="form-horizontal">
+                    <div class="form-group">
+                        <input type="text" name="id" style="display: none">
+                        <label class="col-lg-3" for="gname">角色名：</label>
+                        <div class="col-lg-6">
+                            <input class="form-control" type="text" id="gname" name="gname">
+                        </div>
+                        <div class="col-lg-2">
+                            <a id="usergroup_edit_mode" class="btn btn-primary btn-sm " role="button">ajax保存</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

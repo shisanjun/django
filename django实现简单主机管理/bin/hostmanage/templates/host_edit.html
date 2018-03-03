@@ -1,0 +1,72 @@
+{% extends "muban.html" %}
+{% block title %}
+    主机信息修改
+{% endblock %}
+
+{% block content %}
+    <div class="panel panel-info" style="width: 700px;margin: 50px">
+        <div class="panel-heading">
+            <div class="panel-title text-center">
+                主机信息修改
+            </div>
+        </div>
+        <div class="panel-body">
+            <form action="{{ request.path_info }}" method="post" class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-lg-3 text-right" for="hostname">主机名：</label>
+                    <div class="col-lg-8">
+                        <input class="form-control" type="text" id="hostname" name="hostname" value="{{ host_obj.hostname }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-3 text-right" for="ip">IP地址：</label>
+                    <div class="col-lg-8">
+                        <input class="form-control" type="text" id="ip" name="ip" value="{{ host_obj.ip }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-3 text-right" for="port">主机端口：</label>
+                    <div class="col-lg-8">
+                        <input class="form-control" type="text" id="port" name="port" value="{{ host_obj.port }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-3 text-right" for="cabinet">机柜编号：</label>
+                    <div class="col-lg-8">
+                        <input class="form-control" type="text" id="cabinet" name="cabinet" value="{{ host_obj.cabinet }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-3 text-right" for="ctime">入库时间:</label>
+                    <div class="col-lg-8">
+                        <input class="form-control" type="text" id="ctime" name="ctime" value="{{ host_obj.ctime|date:"Y-m-d" }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-3 text-right" for="hostinfo">主机信息:</label>
+                    <div class="col-lg-8">
+                        <input class="form-control" type="text" id="hostinfo" name="hostinfo" value="{{ host_obj.hostinfo }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-3 text-right" for="group">主机所属组:</label>
+                    <div class="col-lg-8">
+                        <select name="group" class="form-control">
+                            {% for host_group in host_groups %}
+                                {% ifequal host_group.id host_obj.group_id %}
+                                    <option value="{{ host_group.id }}"
+                                            selected="selected">{{ host_group.name }}</option>
+                                {% else %}
+                                    <option value="{{ host_group.id }}">{{ host_group.name }}</option>
+                                {% endifequal %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input class="col-lg-4 btn btn-success" style="margin-left: 200px" type="submit" value="提交">
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

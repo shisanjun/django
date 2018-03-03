@@ -1,0 +1,132 @@
+{% extends "muban.html" %}
+
+{% block title %}
+    用户列表
+{% endblock %}
+
+{% block content %}
+    <p class="nav-info">用户管理 > 用户列表</p>
+    <div class="host_list ">
+        <div class="func">
+            <a id="user_add" class="btn btn-primary " role="button">增加用户</a>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+            <th>序号</th>
+            <th>id</th>
+            <th>用户名</th>
+            <th>用户密码</th>
+            <th>用户组</th>
+            <th>主机管理</th>
+            <th>操作</th>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr uid="{{ user.id }}" id="tr_user_id">
+                    <td>{{ forloop.counter }}</td>
+                    <td target="id" id="user_id">{{ user.id }}</td>
+                    <td target="username">{{ user.username }}</td>
+                    <td target="password">{{ user.password }}</td>
+                    <td td_gid="{{ user.user_group_id }}">{{ user.user_group.name }}</td>
+                    <td>
+                        <ul>
+                            {% for host in user.hosts.all %}
+                                <li>{{ host.name }} &nbsp;{{ host.ip }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>
+                        <a class="btn btn-primary btn-sm user_edit_a" role="button">ajax编辑</a>
+                        <a class="btn btn-success btn-sm user_delete_a" role="button">ajax删除</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="clear"></div>
+    <div class="shade hide"></div>
+    <div class="user_add_div hide show_div">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                增加用户
+                <span class="tools pull-right">
+                    <a href="javascript:;" class="fa fa-chevron-down"></a>
+                    <a id="close_div" class="fa fa-times" style="cursor: pointer">X</a>
+                 </span>
+            </div>
+            <div class="panel-body">
+                <form action="{% url "user" %}" method="post" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-lg-3 text-right" for="username">用户名：</label>
+                        <div class="col-lg-8">
+                            <input class="form-control" type="text" id="username" name="username">
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 text-right" for="passwrod">用户密码：</label>
+                        <div class="col-lg-8">
+                            <input class="form-control" type="text" id="passwrod" name="password">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 text-right" for="gname">用户组：</label>
+                        <div class="col-lg-8">
+                            <select name="gname" id="gname" class="form-control">
+                                {% for group in user_groups %}
+                                    <option value="{{ group.id }}">{{ group.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input class="col-lg-4 btn btn-success" type="submit" value="提交" style="margin-left: 180px ">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="user_edit_div hide show_div">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                增加用户
+                <span class="tools pull-right">
+                    <a href="javascript:;" class="fa fa-chevron-down"></a>
+                    <a id="close_div" class="fa fa-times" style="cursor: pointer">X</a>
+                 </span>
+            </div>
+            <div class="panel-body">
+                <form id="user_edit_form" method="post" class="form-horizontal">
+                    <div class="form-group">
+                        <input type="text" name="id" style="display: none">
+                        <label class="col-lg-3 text-right" for="username">用户名：</label>
+                        <div class="col-lg-9">
+                            <input class="form-control" type="text" id="username" name="username">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 text-right" for="passwrod">用户密码：</label>
+                        <div class="col-lg-9">
+                            <input class="form-control" type="text" id="passwrod" name="password">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 text-right" for="gname">用户组：</label>
+                        <div class="col-lg-9">
+                            <select name="gname" id="gname" class="form-control">
+                                {% for group in user_groups %}
+                                    <option value="{{ group.id }}">{{ group.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <a id="user_edit_mode" class="btn btn-success col-lg-4 " role="button" style="margin-left: 180px">ajax保存</a>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

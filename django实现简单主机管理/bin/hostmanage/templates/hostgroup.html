@@ -1,0 +1,83 @@
+{% extends "muban.html" %}
+{% block title %}
+    主机组列表
+{% endblock %}
+
+{% block content %}
+    <p class="nav-info">主机管理 > 主机组列表</p>
+    <div class="host_list ">
+        <div class="func">
+            <a id="hostgroup_add" class="btn btn-primary " role="button">增加主机组</a>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+            <th>序号</th>
+            <th>主机组名称</th>
+            <th>操作</th>
+            </thead>
+            <tbody>
+            {% for host_group in host_groups %}
+                <tr gid="{{ host_group.id }}" id="tr_hostgroup_id">
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ host_group.name }}</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm hostgroup_edit_a" role="button">ajax编辑</a>
+                        <a class="btn btn-success btn-sm hostgroup_delete_a" role="button">ajax删除</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="clear"></div>
+    <div class="shade hide"></div>
+    <div class="hostgroup_add_div hide show_div" style="width: 500px">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                添加主机组
+                <span class="tools pull-right">
+                    <a href="javascript:;" class="fa fa-chevron-down"></a>
+                    <a id="close_div" class="fa fa-times" style="cursor: pointer">X</a>
+                 </span>
+            </div>
+            <div class="panel-body">
+                <form action="{% url "hostgroup" %}" method="post" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-lg-3 text-right" for="groupname">主机组名：</label>
+                        <div class="col-lg-7">
+                            <input class="form-control" type="text" id="groupname" name="groupname">
+                        </div>
+                        <div class="col-lg-2">
+                            <input class="btn btn-success" type="submit" value="提交">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="hostgroup_edit_div hide show_div">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                修改主机组
+                <span class="tools pull-right">
+                    <a href="javascript:;" class="fa fa-chevron-down"></a>
+                    <a id="close_div" class="fa fa-times" style="cursor: pointer">X</a>
+                 </span>
+            </div>
+            <div class="panel-body">
+                <form id="hostgroup_edit_form" action="{% url "hostgroup" %}" method="post">
+                    <div class="form-group">
+                        <input type="text" name="gid" style="display: none">
+                        <label class="col-lg-3" for="groupname">主机组名：</label>
+                        <div class="col-lg-7">
+                            <input class="form-control" type="text" id="groupname" name="groupname">
+                        </div>
+                        <div class="col-lg-2">
+                            <a id="hostgroup_edit_mode" class="btn btn-primary btn-sm " role="button">ajax修改</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
