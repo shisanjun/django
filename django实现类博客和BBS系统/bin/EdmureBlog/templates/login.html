@@ -1,0 +1,71 @@
+{% load simple_filter %}
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/static/plugins/font-awesome/css/font-awesome.css"/>
+    <link rel="stylesheet" href="/static/css/edmure.css"/>
+    <link rel="stylesheet" href="/static/css/commons.css"/>
+    <link rel="stylesheet" href="/static/css/account.css"/>
+    <style>
+
+    </style>
+</head>
+<body>
+<div class="login">
+    <div style="font-size: 25px; font-weight: bold;text-align: center;">
+        用户登陆
+    </div>
+    <form role="form" action="{% url "login" %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">用户名</label>
+            <input type="text" class="form-control" id="username" placeholder="请输入用户名" name="username">
+        </div>
+        <div class="form-group">
+            <label for="password">密码</label>
+            <input type="password" class="form-control" id="password" placeholder="请输入密码" name="password">
+        </div>
+        <div class="form-group">
+            <label for="password">验证码</label>
+
+            <div class="row">
+                <div class="col-xs-7">
+                    <input type="text" class="form-control" id="password" placeholder="请输入验证码" name="check_code">
+                </div>
+                <div class="col-xs-5">
+                    <img src="/check_code.html" onclick="changeImg(this);">
+                </div>
+
+            </div>
+
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="cookietime"> 一个月内自动登陆
+            </label>
+            <div class="right">
+                <a href="#">忘记密码？</a>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-default">登 陆</button>
+        <p class="error_info">
+            {% render_error_info obj.errors as errors %}
+            <ul>
+             {%  for error in errors%}
+                 <li >{{ error}}</li>
+             {% endfor %}
+        </ul>
+        </p>
+    </form>
+    <script>
+        function changeImg(ths){
+            //刷新新地址
+            ths.src=ths.src+"?"
+        }
+    </script>
+</div>
+</body>
+</html>

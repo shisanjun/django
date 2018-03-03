@@ -1,0 +1,122 @@
+{% extends 'backend_layout.html' %}
+{% load simple_filter %}
+{% block css %}
+    <link rel="stylesheet" href="/static/plugins/kindeditor/themes/default/default.css"/>
+{% endblock %}
+
+{% block conent %}
+    <ol class="breadcrumb" style="margin-bottom: 0;">
+        <li><a href="#">文章管理</a></li>
+        <li class="active">修改文章</li>
+    </ol>
+    <div style="padding: 5px 8px;">
+        <form id="article_fm" action="{{request.path_info }}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="title">标题</label>
+                <input type="text" class="form-control" id="title" placeholder="文章标题" name="title"
+                       value="{{ article_obj.title }}">
+                <p id="show_title"></p>
+            </div>
+            <div class="form-group">
+                <label for="title">简介</label>
+                <textarea class="form-control" placeholder="文章简介" name="summary">{{ article_obj.summary }}</textarea>
+                <p class="show_summary"></p>
+            </div>
+            <div class="form-group">
+                <label for="content">内容</label>
+                <textarea name="content" id="article_content"
+                          style="width: 100%;min-height:500px;visibility:hidden;">{{ article_obj.article.content }}</textarea>
+                <p id="show_content"></p>
+            </div>
+            <div class="form-group">
+
+                <label for="article_type">文章类型</label>
+                <div>
+                    {% for article_type_obj in article_type_objs %}
+                        <label class="radio-inline">
+
+                            {% ifequal article_type_obj.0  article_obj.article_type %}
+                                <input type="radio" name="article_type" value="{{ article_type_obj.0 }}"
+                                       checked="checked"> {{ article_type_obj.1 }}
+                            {% else %}
+                                <input type="radio" name="article_type" value="{{ article_type_obj.0 }}">
+                                {{ article_type_obj.1 }}
+                            {% endifequal %}
+                        </label>
+                    {% endfor %}
+
+                    <p id="show_article_type"></p>
+                </div>
+
+            </div>
+            <div class="form-group">
+
+                <label for="article_type">分类</label>
+                <div>
+                    {% for category_obj in category_objs %}
+                        <label class="radio-inline">
+                            {% ifequal category_obj.nid  article_obj.category_id %}
+                                <input type="radio" name="article_category"
+                                       value="{{ category_obj.nid }}" checked="checked"> {{ category_obj.title }}
+                            {% else %}
+                                <input type="radio" name="article_category"
+                                       value="{{ category_obj.nid }}"> {{ category_obj.title }}
+                            {% endifequal %}
+                        </label>
+                    {% endfor %}
+                    <p id="show_article_type"></p>
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label for="article_tag">标签</label>
+                <div>
+
+                    {% for tag_obj in tag_objs %}
+
+                            <label class="checkbox-inline">
+                                {% if tag_obj.nid|select_tags:article_obj.tags.all %}
+                                    <input type="checkbox" name="article_tag" value="{{ tag_obj.nid }}"
+                                           checked="checked"> {{ tag_obj.title }}
+                                {% else %}
+                                    <input type="checkbox" name="article_tag" value="{{ tag_obj.nid }}">{{ tag_obj.title }}
+
+                                {% endif %}
+                            </label>
+                    {% endfor %}
+                    <p id="show_article_tag"></p>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" id="submit_article" class="btn btn-primary">保 存</button>
+
+            </div>
+        </form>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+    <script charset="utf-8" src="/static/plugins/kindeditor/kindeditor-min.js"></script>
+    <script charset="utf-8" src="/static/plugins/kindeditor/lang/zh_CN.js"></script>
+    <script>
+        var editor;
+        KindEditor.ready(function (K) {
+            editor = K.create('textarea[name="content"]', {
+                resizeType: 1,
+                uploadJson: '/on.asp',
+                fileManagerJson: '/asp/fjson.asp',
+                afterCreate: function () {
+                    this.sync();
+                },
+                afterBlur: function () {
+                    this.sync();
+                }
+            });
+
+        });
+
+    </script>
+{% endblock %}

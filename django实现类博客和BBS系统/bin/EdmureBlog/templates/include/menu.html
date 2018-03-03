@@ -1,0 +1,47 @@
+<div class="notice">
+    <div class="notice-header">公告</div>
+    <div class="notice-body">
+        <ul>
+            <li>昵称：{{ blog_home.user.nickname }}</li>
+            <li>粉丝：{{ fans_count|default:0}}</li>
+            <li>关注：{{ relate_fans_count|default:0}}</li>
+            <li>博龄：{{ blog_home.user.create_time|timesince }}</li>
+            <li>邮箱：{{ blog_home.user.email }}</li>
+        </ul>
+        <div class="memo">
+            <a id="fan_add" style="margin-left: 20px;cursor: pointer">添加关注</a>
+            <a id="fan_cancel" style="margin-left: 20px;cursor: pointer">取消关注</a>
+
+        </div>
+    </div>
+</div>
+<div class="tags">
+    <div class="tags-header">标签</div>
+    <div class="tags-body">
+        <ul>
+            {% for tag_obj in tag_objs %}
+                <li>{{ tag_obj.title }}({{ tag_obj.tag.all|length }})</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<div class="types">
+    <div class="types-header">分类</div>
+    <div class="types-body">
+        <ul>
+            {% for category_obj in category_objs %}
+                <li>{{ category_obj.title }}({{ category_obj.category.all|length }})</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<div class="dates">
+    <div class="dates-header">时间</div>
+    <div class="dates-body">
+        <ul>
+            {% for date_list_tmp in date_list %}
+                <li>{{ date_list_tmp.0 }}-{{ date_list_tmp.1 }}({{ date_list_tmp.2 }})</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

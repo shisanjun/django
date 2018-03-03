@@ -1,0 +1,163 @@
+{% extends 'backend_layout.html' %}
+{% block css %}
+
+{% endblock %}
+{% block conent %}
+    <ol class="breadcrumb">
+        <li><a href="#">标签管理</a></li>
+        <li class="active">标签列表</li>
+    </ol>
+    <div>
+        <div class="row" style="padding: 20px 5px;">
+            <form class="form-horizontal" action="{% url "tag" %}" method="post">
+                {% csrf_token %}
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label class="col-xs-1 control-label">标签名</label>
+
+                        <div class="col-xs-3">
+                            <input type="text" class="form-control" id="tagname" placeholder="请输入标签名称" name="title">
+                        </div>
+                        <div class="col-xs-3">
+                            <input type="submit" class="btn btn-primary" value="添 加">
+                        </div>
+                        <p>{{ tag_fm.errors.title.0 }}</p>
+                        <p>{{ error }}</p>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div style="height: 35px;background-color: #f5f5f5;line-height: 35px;padding: 0 15px;">
+            <i class="fa fa-table" aria-hidden="true"></i>
+            标签列表
+        </div>
+
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>标签</th>
+                <th>文章个数</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="tag_tb">
+
+            {% for tag_obj in tag_objs %}
+                <tr>
+                    <td>{{ tag_obj.title }}</td>
+                    <td>{{ tag_obj.tag.all|length }}</td>
+                    <td target="{{ tag_obj.nid }}">
+                        <a class="btn btn-danger btn-xs tag_del">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                            删除
+                        </a>
+                        |
+                        <a class="btn btn-primary btn-xs tag_edit">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            编辑
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="clearfix">
+            <ul class="pagination right" style="margin-top: 0;">
+                {{ page_str }}
+            </ul>
+        </div>
+    </div>
+
+    <div class="shade hide"></div>
+
+    <div class="edit_div hide" style="padding: 5px 4px;font-size: 14px; font-weight: bold;text-align: center;">
+        <form>
+            <div class="col-xs-12">
+                <div class="form-group modal-title">标签修改</div>
+                <hr/>
+                <div class="form-group">
+                    <label class="col-xs-3">标签:</label>
+                    <div class="col-xs-9">
+                        <input type="text" class="form-control" id="tag_edit_id" style="display: none">
+                        <input type="text" class="form-control" id="tag_edit_gname" placeholder="请输入标签名称" name="title">
+                    </div>
+                </div>
+                <hr/>
+                <div class="form-group">
+                    <div class="col-ms-6">
+                        <p>&nbsp;</p>
+                        <input id="tag_edit_save" type="button" class="btn btn-primary" value="修改">
+                        <input id="tag_edit_cancel" type="button" class="btn btn-primary" value="取消">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(function () {
+            //删除数据
+            $(".tag_del").click(
+                    function () {
+                        var nid = $(this).parent().attr("target");
+                        var csrftoken = $.cookie("csrftoken");
+                        $.ajax({
+                                    url: "{% url "tag_del" %}",
+                                    type: "POST",
+                                    data: {"nid": nid},
+                                    headers: {"X-CSRFtoken": csrftoken},
+                                    dataType: "JSON",
+                                    success: function (ths) {
+                                        if (ths.status) {
+                                            location.reload()
+                                        }
+                                    }
+                                }
+                        )
+                    }
+            )
+
+            //编辑数据
+            $("#tag_tb").on("click", ".tag_edit", function () {
+
+                $(".shade,.edit_div").removeClass("hide");
+                var nid = $(this).parent().attr("target");
+                $("#tag_edit_id").val(nid);
+
+                $("#tag_edit_gname").val($(this).parent().parent().children().first().text());
+            })
+
+            //保存修改的数据
+            $("#tag_edit_save").click(function(){
+
+                var nid=$("#tag_edit_id").val();
+                var new_title=$("#tag_edit_gname").val();
+                var csrftoken= $.cookie("csrftoken");
+                $.ajax({
+                    url:"{% url "tag_edit" %}",
+                    type:"POST",
+                    headers:{"X-CSRFtoken":csrftoken},
+                    data:{"nid":nid,"title":new_title},
+                    dataType:"JSON",
+                    success:function(thr){
+                        if (thr.status){
+                           location.href="{% url "tag" %}";
+                        }
+                    }
+                })
+            })
+
+            //取消
+            $("#tag_edit_cancel").click(
+                    function(){
+                        $(".shade,.edit_div").addClass("hide");
+                    }
+            )
+
+        })
+    </script>
+{% endblock %}

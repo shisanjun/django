@@ -1,0 +1,263 @@
+{% extends 'home_layout.html' %}
+{% load simple_filter %}
+{% block css %}
+    <link rel="stylesheet" href="/static/plugins/kindeditor/themes/default/default.css"/>
+    <style>
+        .hide {
+            display: none;
+        }
+
+        .reply_ack_a {
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="art-title">
+        <a>{{ article_obj.title }}</a>
+    </div>
+    <hr/>
+    <div class="art-content">
+        {{ article_obj.article.content|safe }}
+    </div>
+    <div class="art-recommend clearfix">
+        <div class="recommend">
+            <a class="up" id="article_up"
+               style="cursor:pointer;margin: 5px 10px;display: inline-block;padding: 5px 15px;border: 1px solid #dddddd;text-align: center;">
+                <i class="fa fa-thumbs-o-up fa-3" aria-hidden="true" style="font-size: 25px"></i>
+
+                <div>{{ article_obj.up_count }}</div>
+            </a>
+            <a href="" class="down" id="article_down"
+               style="cursor:pointer; margin: 5px 30px 5px 10px;display: inline-block;padding: 5px 15px;border: 1px solid #dddddd;text-align: center;">
+                <i class="fa fa-thumbs-o-down fa-3" aria-hidden="true" style="font-size: 25px"></i>
+
+                <div>{{ article_obj.down_count }}</div>
+            </a>
+        </div>
+    </div>
+    <div class="art-tips clearfix">
+        <div class="tips">
+            <span class="ctime">{{ article_obj.create_time|date:"Y-m-d H:i:s" }}</span>
+            <a class="author">{{ blog_home.user.username }}</a>
+            <span class="comment-count">评论({{ article_obj.comment_count }})</span>
+            <span class="read-count">阅读({{ article_obj.read_count }})</span>
+        </div>
+    </div>
+    <div id="AllanboltSignature">
+        <div style="border-bottom: #e0e0e0 1px dashed; border-left: #e0e0e0 1px dashed; padding: 10px; font-family: 微软雅黑; font-size: 11px; border-top: #e0e0e0 1px dashed; border-right: #e0e0e0 1px dashed; "
+             id="PSignature">
+            <div style="float:left;width:70px;">
+                <img src="/static/imgs/o_Warning.png" style="width:65px;height:65px">
+            </div>
+            <div style="float:left;padding-top:10px;">
+
+                <div style="padding: 1px">作者：<a href="http://www.cnblogs.com/wupeiqi/"
+                                                target="_blank">{{ blog_home.user.username }}</a></div>
+                <div style="padding: 1px">出处：<a href="http://127.0.0.1:8000{{ request.path_info }}" target="_blank">http://127.0.0.1:8000{{ request.path_info }}</a>
+                </div>
+                <div style="padding: 1px">本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文连接</div>
+            </div>
+            <div style="clear:both;"></div>
+        </div>
+    </div>
+    <div class="art-comment">
+        <div class="comment-title">
+            评论列表
+        </div>
+        <div class="comment-list" id="comment-list">
+            {% for comment_obj in comment_objs %}
+                <div class="comment-item">
+                    <div class="reply-title clearfix">
+                        <div class="user-info">
+                            <span>{{ comment_obj.user.username }}</span>
+                            <span>{{ comment_obj.create_time|date:"Y-m-d H:i:s" }}</span>
+                        </div>
+
+                        <div class="reply">
+                            <a class="reply_ack_a">回复</a>
+                            <div class="reply_ack hide">
+                                <input type="text" value="{{ comment_obj.nid }}" class="hide">
+                                <textarea type="text" multiple name="reply_cmment" id="reply_cmment"
+                                          style="width: 500px;height: 50px;float: left"></textarea>
+                                <input onclick=" returnReplay(this)" type="button" id="reply_button" value="回复"
+                                       style="margin: 15px;float: left">
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="reply-body">
+                        <div class="reply-user">@{{ comment_obj.reply.user.username }}</div>
+                        <div class="content">
+                            {{ comment_obj.content }}
+                        </div>
+
+                        {#                        <div class="content">#}
+                        {#                            {{ comment_obj.reply.content|safe }}#}
+                        {#                        </div>#}
+                    </div>
+                </div>
+                <hr/>
+            {% endfor %}
+
+        </div>
+        <div class="comment-list-pager">
+            <ul class="pagination">
+                <li><a href="#">&laquo;</a></li>
+                <li><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li><a href="#">&raquo;</a></li>
+            </ul>
+        </div>
+        <div class="comment-area">
+            <form id="form_comment">
+                <div class="replay-comment-user">
+                    <input type="text" name="article_id" value="{{ article_obj.nid }}" style="display: none;">
+                    <input type="text" name="username" value="{{ request.session.username }}" style="display: none;">
+                </div>
+                {% blog_login_valid request %}
+                <div class="reply-btn">
+                    <span><span>21</span>/255字</span>
+                    <a id="replay_article" style="cursor: pointer">发表回复</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block js %}
+    <script charset="utf-8" src="/static/plugins/kindeditor/kindeditor-min.js"></script>
+    <script charset="utf-8" src="/static/plugins/kindeditor/lang/zh_CN.js"></script>
+    <script>
+        var editor;
+        KindEditor.ready(function (K) {
+            editor = K.create('textarea[name="content"]', {
+                resizeType: 1,
+                uploadJson: '/on.asp',
+                fileManagerJson: '/asp/fjson.asp',
+                afterCreate: function () {
+                    this.sync();
+                },
+                afterBlur: function () {
+                    this.sync();
+                }
+            });
+
+        });
+
+        //赞
+        $("#article_up").click(
+                function () {
+                    console.log("article_up");
+                    var csrftoken = $.cookie("csrftoken")
+
+                    $.ajax(
+                            {
+                                url: "{% url "up_article" %}",
+                                type: "GET",
+                                data: {"site": "{{ site }}", "nid": "{{ article_obj.nid  }}"},
+                                headers: {"X-CSRFtoken": csrftoken},
+                                dataType: "JSON",
+                                success: function (args) {
+                                    if (args.status) {
+                                        location.reload()
+                                        alert("赞成功")
+                                    } else {
+                                        alert("已赞过")
+                                    }
+                                }
+                            }
+                    )
+                }
+        )
+        //踩
+        $("#article_down").click(
+                function () {
+                    console.log("article_up");
+                    var csrftoken = $.cookie("csrftoken")
+
+                    $.ajax(
+                            {
+                                url: "{% url "down_article" %}",
+                                type: "GET",
+                                data: {"site": "{{ site }}", "nid": "{{ article_obj.nid  }}"},
+                                headers: {"X-CSRFtoken": csrftoken},
+                                dataType: "JSON",
+                                success: function (args) {
+                                    if (args.status) {
+                                        location.reload()
+                                        alert("踩成功")
+                                    }
+                                    else {
+                                        alert("已踩过")
+                                    }
+                                }
+                            }
+                    )
+                }
+        )
+
+        $("#replay_article").click(
+                //评论
+                function () {
+                    var csrftoken = $.cookie("csrftoken");
+                    var replay_comment = $("#replay_comment").text();
+                    console.log(replay_comment)
+                    $.ajax({
+                        url: "{% url "replay_article" %}",
+                        type: "POST",
+                        headers: {"X-CSRFtoken": csrftoken},
+                        data: $("#form_comment").serialize(),
+                        dataType: "JSON",
+                        success: function (args) {
+                            if (args.status) {
+                                location.reload();
+                            } else {
+                                alert(args.error)
+                            }
+                        }
+                    })
+                })
+
+
+        $(".reply_ack_a").click(
+                function () {
+                    $(this).next().removeClass("hide");
+                }
+        )
+
+        function returnReplay(ths) {
+            var csrftoken = $.cookie("csrftoken");
+            var comment_id = $(ths).parent().children("input").val();
+            var replay_comment = $(ths).prev().val();
+            var comment_user = $(ths).parent().parent().prev().children().text()
+            console.log("1111", comment_user)
+            $.ajax({
+                        url: "{% url "replay_otheruser" %}",
+                        type: "POST",
+                        headers: {"X-CSRFtoken": csrftoken},
+                        data: {
+                            "comment_id": comment_id,
+                            "replay_comment": replay_comment,
+                            "article_id": "{{ article_obj.nid }}",
+                            "username": "{{ request.session.username }}",
+                            "comment_user": comment_user,
+                        },
+                        dataType: "JSON",
+                        success: function (args) {
+
+                            location.reload();
+                            $(ths).parent().parent().addClass("hide");
+
+                        }
+                    }
+            )
+        }
+    </script>
+{% endblock %}

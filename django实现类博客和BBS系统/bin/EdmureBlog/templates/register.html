@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/static/plugins/font-awesome/css/font-awesome.css"/>
+    <link rel="stylesheet" href="/static/css/edmure.css"/>
+    <link rel="stylesheet" href="/static/css/commons.css"/>
+    <link rel="stylesheet" href="/static/css/account.css"/>
+    <style>
+
+    </style>
+</head>
+<body>
+<div class="register">
+    <div style="font-size: 25px; font-weight: bold;text-align: center;">
+        用户注册
+    </div>
+    <form role="form" id="register_form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">用户名</label>
+            <input type="text" class="form-control" id="username" placeholder="请输入用户名" name="username">
+            <p id="error_username"></p>
+        </div>
+        <div class="form-group">
+            <label for="email">邮箱</label>
+            <input type="email" class="form-control" id="email" placeholder="请输入邮箱" name="email">
+            <p id="error_email"></p>
+        </div>
+        <div class="form-group">
+            <label for="password">密码</label>
+            <input type="password" class="form-control" id="password" placeholder="请输入密码" name="password">
+            <p id="error_password"></p>
+        </div>
+        <div class="form-group">
+            <label for="confirm_password">确认密码</label>
+            <input type="password" class="form-control" id="password" placeholder="请输入密码" name="password2">
+            <p id="error_password2"></p>
+        </div>
+
+        <div class="form-group">
+            <label for="password">验证码</label>
+
+            <div class="row">
+                <div class="col-xs-7">
+                    <input type="text" class="form-control" id="password" placeholder="请输入验证码" name="check_code">
+                    <p id="error_check_code"></p>
+                </div>
+                <div class="col-xs-5">
+                    <img src="/check_code.html" onclick="changeImg(this);">
+                </div>
+            </div>
+            <p id="show_error"></p>
+        </div>
+        <a id="register_a" type="submit" class="btn btn-default" >下一步</a>
+    </form>
+    <script src="/static/js/jquery-1.12.4.js"></script>
+    <script src="/static/js/jquery.cookie.js"></script>
+    <script>
+
+       //刷新验证码
+        function changeImg(ths){
+            ths.src=ths.src+"?"
+        }
+
+
+        $("#register_a").click(
+                function(){
+                    $.ajax({
+                        url:'{% url "register" %}',
+                        type:"POST",
+                        //headers: {"X-CSRFtoken":$.cookie("csrftoken")},如果是用serialize，他就csrftoken一起发送过去，所以不需要加headers
+                        data:$("#register_form").serialize(),
+                        success:function(arg){
+                            //第一次转换
+                            var data1=JSON.parse(arg);
+                            console.log(data1);
+                            //#如果返回的状态为false，输出出错的内容
+                            if (!data1.status){
+                                //清空所有error p标签的内容
+                                $("#register_form").find('p[id*=error_]').each(
+                                        function(){
+                                            $(this).text("")
+                                        }
+                                )
+                                //第二次转换
+                                var error_list=JSON.parse(data1.error)
+                                //根据错误信息动态绑定到p标签
+                                for (var item in error_list){
+                                    var tmp='#error_'+item+''
+                                    $(tmp).text(error_list[item][0].message);
+                                }
+                                /*
+                                手动绑定标签，但是会存在error中没有的信息报错
+                                $("#error_username").text(data1.error["username"][0].message);
+                                $("#error_email").text(data1.error.email[0].message);
+                                $("#error_password").text(data1.error.password[0].message);
+                                $("#error_password2").text(data1.error.password2[0].message);
+                                $("#error_check_code").text(data1.error.check_code[0].message);
+                                */
+                            }
+                            else{
+                                //跳转到后台
+                                location.href='{% url "base_info" %}'
+                            }
+                        }
+
+
+
+
+                    })
+                }
+        )
+    </script>
+
+</div>
+</body>
+</html>

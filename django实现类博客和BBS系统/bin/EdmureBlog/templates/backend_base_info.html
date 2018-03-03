@@ -1,0 +1,189 @@
+{% extends 'backend_layout.html' %}
+{% block css %}
+    <style>
+        .form-horizontal .control-label {
+            padding-top: 7px;
+            margin-bottom: 0;
+            text-align: right;
+        }
+
+        .avatar-container {
+            height: 200px;
+            width: 200px;
+            padding: 2px;
+            border: 1px solid #dddddd;
+            position: relative;
+        }
+
+        .avatar-container img {
+            height: 100%;
+            width: 100%;
+            border: 0;
+            overflow: hidden;
+        }
+
+        .avatar-container .text {
+            text-align: center;
+        }
+
+        .avatar-container .img-file {
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0;
+            position: absolute;
+            z-index: 102;
+        }
+    </style>
+{% endblock %}
+{% block conent %}
+    <ol class="breadcrumb">
+        <li><a href="#">用户管理</a></li>
+        <li class="active">用户信息</li>
+    </ol>
+    <div>
+
+        <div class="row" style="position: relative;">
+            <form class="form-horizontal" id="blog_fm">
+                {% csrf_token %}
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label class="col-xs-2 control-label">用户名</label>
+
+                        <div class="col-xs-5">
+                            <p class="form-control-static">{{ request.session.username }}</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-2 control-label">邮箱</label>
+
+                        <div class="col-xs-5">
+                            <p class="form-control-static">{{ user_obj.email }}</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="nickname" class="col-xs-2 control-label">昵称</label>
+
+                        <div class="col-xs-5">
+                            <input type="text" class="form-control" id="nickname" placeholder="请输入昵称" name="nickname"
+                                   value="{{ user_obj.nickname }}">
+                            <p id="show_nickname"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="blogUrl" class="col-xs-2 control-label">博客地址</label>
+
+                        <div class="col-xs-5">
+                            <input type="text" class="form-control" id="blogUrl" name="blogUrl"
+                                   value="{{ user_obj.username }}"
+                                   placeholder="如：wupeiqi,则个人博客为http://www.xxx.com/wupeiqi.html">
+                            <p id="show_blogUrl"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="blogTheme" class="col-xs-2 control-label">博客主题</label>
+
+                        <div class="col-xs-5">
+                            <select id="blogTheme" class="form-control" name="blogTheme">
+                                {% for theme in theme_obj %}
+                                    {% ifequal blog_obj.theme_id  theme.nid %}
+                                        <option value="{{ theme.nid }}" selected="selected">{{ theme.name}}</option>
+                                    {% else %}
+                                        <option value="{{ theme.nid }}">{{ theme.name }}</option>
+                                    {% endifequal %}
+                                {% endfor %}
+                            </select>
+                            <p id="show_blogTheme"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="blogTitle" class="col-xs-2 control-label">博客标题内容</label>
+
+                        <div class="col-xs-8">
+                            <textarea id="blogTitle" style="min-height: 100px" class="form-control"
+                                      name="blogTitle"  placeholder="来一杯鸡汤...">{{ blog_obj.title }}</textarea>
+                            <p id="show_blogTitle"></p>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-xs-offset-2 col-xs-10">
+                            <button id="blog_save_bt" type="button" class="btn btn-primary">保 存</button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+            <div style="position: absolute;" class="col-xs-offset-7 col-xs-5">
+                <div class="avatar-container">
+                    <img origin="/static/imgs/avatar/default.png" src="{{ user_obj.avatar }}" id="show_icon">
+                    <div class="text">点击图片更换(<a href="#">撤销</a>)</div>
+                    <input id="avatarImg" type="file" class="img-file" />
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+    $(function(){
+
+        //保存修改数据
+        $("#blog_save_bt").click(
+            function(){
+                $.ajax({
+                    url:"{% url "base_info" %}",
+                    type:"POST",
+                    data:$("#blog_fm").serialize(),
+                    dataType:"JSON",
+                    success:function(ths){
+
+                        if (!ths.status){
+                            var errors=JSON.parse(ths.error)
+                            for (var item in errors){
+                                var tmp='#show_'+item+'';
+                                $(tmp).text(errors[item][0].message);
+                            }
+                        }
+                        else {
+                            alert("保存成功")
+                            location.href="{% url "base_info" %}"
+                        }
+                    }
+                })
+            }
+         )
+
+        //修改头像
+        $("#avatarImg").change(
+                function(){
+                    var file_obj=document.getElementById("avatarImg").files[0]
+                    var fd=new FormData();
+                    fd.append("file_obj",file_obj);
+                    $.ajax({
+                        url:'{% url "avatar_img" %}',
+                        type:"POST",
+                        data:fd,
+                        processData:false,
+                        contentType:false,
+                        dataType:"JSON",
+                        success:function(ths){
+                            if (ths.status){
+                                console.log(ths.data)
+                                var img_path="/"+ths.data+"?";
+                                $("#show_icon").attr("src",img_path);
+                            }
+                        }
+
+                    })
+                }
+        )
+
+    })
+
+
+    </script>
+{% endblock %}

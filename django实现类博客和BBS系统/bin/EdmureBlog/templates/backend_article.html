@@ -1,0 +1,143 @@
+{% extends 'backend_layout.html' %}
+{% block css %}
+    <style>
+
+        #select_div a{
+            display: inline-block;
+            padding: 3px 5px;
+            border: 1px solid #dddddd;
+            margin: 3px ;
+        }
+        #select_div a.active{
+            background-color: brown;
+        }
+    </style>
+{% endblock %}
+{% block conent %}
+    <ol class="breadcrumb" style="margin-bottom: 0;">
+        <li><a href="#">文章管理</a></li>
+        <li class="active">文章列表</li>
+    </ol>
+    <div>
+
+        <div style="border: 1px dashed #dddddd;padding: 8px;border-left: 3px solid #337ab7;">
+            <i class="fa fa-search" aria-hidden="true"></i> 搜索条件
+        </div>
+        <div style="padding: 10px" id="select_div">
+            <div class="row clearfix" style="margin: 0;padding: 8px 0;">
+                <div class="col-xs-2" style="text-align: right">
+                    <a href="/backend/condition-0-{{ article_dict.category_id }}-{{ article_dict.tags_id }}.html">全部类型</a>
+                </div>
+                <div class="col-xs-10">
+                    {% for article_type_obj in article_type_objs %}
+                        {% if article_type_obj.0 ==  article_dict.article_type %}
+                            <a class="active"
+                               href="/backend/condition-{{ article_type_obj.0 }}-{{ article_dict.category_id }}-{{ article_dict.tags_id }}.html">{{ article_type_obj.1 }}</a>
+                        {% else %}
+                            <a href="/backend/condition-{{ article_type_obj.0 }}-{{ article_dict.category_id }}-{{ article_dict.tags_id }}.html">{{ article_type_obj.1 }}</a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row clearfix" style="margin: 0;padding: 8px 0;">
+                <div class="col-xs-2" style="text-align: right">
+                    <a href="/backend/condition-{{ article_dict.article_type }}-0-{{ article_dict.tags_id }}.html">全部分类</a>
+                </div>
+                <div class="col-xs-10">
+                    {% for category_obj in category_objs %}
+                        {% if category_obj.nid   == article_dict.category_id %}
+
+                            <a class="active"
+                               href="/backend/condition-{{ article_dict.article_type }}-{{ category_obj.nid }}-{{ article_dict.tags_id }}.html">{{ category_obj.title }}</a>
+                        {% else %}
+                            <a href="/backend/condition-{{ article_dict.article_type }}-{{ category_obj.nid }}-{{ article_dict.tags_id }}.html">{{ category_obj.title }}</a>
+                        {% endif %}
+
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row clearfix" style="margin: 0;padding: 8px 0;">
+                <div class="col-xs-2" style="text-align: right">
+                    <a href="/backend/condition-{{ article_dict.article_type }}-{{ article_dict.category_id }}-0.html">全部标签</a>
+                </div>
+                <div class="col-xs-10">
+                    {% for tag_obj in tag_objs %}
+                        <a href="/backend/condition-{{ article_dict.article_type }}-{{ article_dict.category_id }}-{{ tag_obj.nid }}.html">{{ tag_obj.title }}</a>
+
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"
+             style="height: 36px;line-height: 35px;padding: 0 15px;border-top: 1px solid #dddddd;background-color: #f1f0f0">
+            <i class="fa fa-table" aria-hidden="true"></i>
+            搜索文章(1000篇)
+            <a href="{% url "add_article" %}"
+               class="right" style="display: inline-block;padding:0 10px;background-color: #428bca;color: #ffffff;">
+                <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                创建新文章
+            </a>
+        </div>
+
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>文章标题</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="article_data">
+            {% for article_obj in article_objs %}
+                <tr>
+                    <td>{{ article_obj.title }}</td>
+                    <td target="{{ article_obj.nid }}">
+                        <a class="btn btn-danger btn-xs article_del">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                            删除
+                        </a>
+                        |
+                        <a class="btn btn-primary btn-xs" href="/backend/edit-article-{{ article_obj.nid }}.html">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            编辑
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="clearfix">
+            <ul class="pagination right" style="margin-top: 0">
+                {{ page_str }}
+            </ul>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        //删除
+        $(function () {
+            $("#article_data").on("click", ".article_del", function () {
+                var nid = $(this).parent().attr("target")
+                var csrftoken = $.cookie("csrftoken")
+
+                $.ajax({
+                    url: "{% url "article_del" %}",
+                    type: "POST",
+                    data: {"nid": nid},
+                    dataType: "JSON",
+                    headers: {"X-CSRFtoken": csrftoken},
+                    success: function (thr) {
+                        if (thr.status) {
+                            location.reload();
+                        }
+                    }
+                })
+            })
+        })
+    </script>
+{% endblock %}
