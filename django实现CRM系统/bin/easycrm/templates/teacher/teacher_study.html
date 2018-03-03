@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load student_tag %}
+{% block pg-body %}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="panel-title">上课记录:{{ course_obj.from_class }}{{ course_obj.day_num }}</div>
+        </div>
+        <div class="panel-body">
+            <div class="row" style="margin: 10px">
+                <input id="change_record" class="btn btn-success" type="button" value="批量修改">
+                <input id="save_record" class="btn btn-success hidden" type="button" value="保存">
+            </div>
+            <section id="unseen">
+                <table class="table table-bordered table-striped table-condensed">
+                    <thead>
+                    <tr>
+                        <th>课程节次</th>
+                        <th>学生姓名</th>
+                        <th>上课记录</th>
+                        <th>分数</th>
+                        <th>日期</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table_data">
+
+                    {% for study_obj in study_objs %}
+
+                        <tr>
+                            <td target="id" class="hidden">{{ study_obj.id }}</td>
+                            <td>{{ study_obj.course_record.day_num }}</td>
+                            <td>{{ study_obj.student.customer.name }}</td>
+                            <td target="attendence">
+                                <span>{{ study_obj.get_attendence_display }}</span>
+                                <select name="attendence" class="hidden" style="width: 150px;height: 30px">
+                                    {% for opt in  attendence_choice %}
+                                        {% ifequal  study_obj.get_attendence_display opt.1 %}
+                                            <option value="{{ opt.0 }}" selected>{{ opt.1 }}</option>
+                                        {% else %}
+                                            <option value="{{ opt.0 }}">{{ opt.1 }}</option>
+                                        {% endifequal %}
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td target="score">
+                                <span>{{ study_obj.get_score_display }}</span>
+                                <select name="score" class="hidden" style="width: 150px;height: 30px">
+                                    {% for opt in  score_choicese %}
+                                        {% ifequal  study_obj.get_score_display opt.1 %}
+                                            <option value="{{ opt.0 }}" selected>{{ opt.1 }}</option>
+                                        {% else %}
+                                            <option value="{{ opt.0 }}">{{ opt.1 }}</option>
+                                        {% endifequal %}
+                                    {% endfor %}
+                                </select>
+                            </td>
+
+                            <td>{{ study_obj.date |date:"Y-m-d" }}</td>
+                            <td><a href="{% url 'teacher_homework_detail' study_obj.id %}">审批作业</a></td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </section>
+        </div>
+        </section>
+    </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        $("#change_record").click(
+                function () {
+                    $("#table_data").find('td[target="attendence"]').each(
+                            function () {
+                                $(this).find("span").addClass("hidden");
+                                $(this).find("select").removeClass("hidden");
+                            }
+                    )
+                    $("#table_data").find('td[target="score"]').each(
+                            function () {
+                                $(this).find("span").addClass("hidden");
+                                $(this).find("select").removeClass("hidden");
+                            }
+                    )
+                    $("#save_record").removeClass("hidden");
+                    $("#change_record").addClass("hidden");
+
+                }
+        )
+        $("#save_record").click(
+                function () {
+                    var ids = []
+                    $("#table_data").find("tr").each(
+                            function () {
+                                var id = $(this).find('td[target="id"]').text();
+                                var attendence = $(this).find('td[target="attendence"]').find("select");
+                                var score = $(this).find('td[target="score"]').find("select");
+
+                                attendences = {{ attendence_choice |safe}}
+
+                                        scores =
+                                {{ score_choicese|safe }}
+                                for (k in attendences) {
+
+                                    if (attendences[k][0] == attendence.val()
+                                    ) {
+                                        var attendence_text = attendences[k][1]
+                                    }
+                                }
+                                for (k in scores) {
+
+                                    if (scores[k][0] == attendence.val()
+                                    ) {
+                                        var score_text = scores[k][1]
+                                    }
+                                }
+
+                                $(this).find('td[target="attendence"]').find("span").text(attendence_text).removeClass("hidden")
+                                attendence.addClass("hidden")
+                                $(this).find('td[target="score"]').find("span").text(score_text).removeClass("hidden")
+                                score.addClass("hidden")
+
+                                ids.push(JSON.stringify({"id": id, "attendence": attendence.val(), "score": score.val()}))
+                            }
+                    )
+                    $("#change_record").removeClass("hidden");
+                    $("#save_record").addClass("hidden");
+
+
+
+                    var csrftoken= $.cookie("csrftoken")
+
+
+                    $.ajax(
+                            {
+                                url:"{{ request.path_info }}",
+                                type:"POST",
+                                data:{"ids":ids},
+                                headers:{"X-CSRFtoken":csrftoken},
+                                traditional:true,
+                                dataType:"JSON",
+                                success:function(args){
+                                    if (args.status){
+                                        location.reload()
+                                    }
+                                }
+                            }
+                    )
+                }
+        )
+    </script>
+{% endblock %}

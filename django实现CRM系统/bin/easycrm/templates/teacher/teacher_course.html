@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load student_tag %}
+{% block pg-body %}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="panel-title">课程记录</div>
+        </div>
+        <div class="panel-body">
+            <div class="row" style="margin: 10px">
+                <input id="init_record" class="btn btn-success" type="button" value="批量初始化上课情况  ">
+                <a href="{% url "teacher_courserecord_add" class_id %}" id="init_record" class="btn btn-danger"
+                   type="button">增加上课记录</a>
+            </div>
+            <section id="unseen">
+
+                <table class="table table-bordered table-striped table-condensed">
+                    <thead>
+                    <tr>
+
+                        <th><input id="choice_checkbox" type="checkbox">选择</th>
+                        <th>课程名称</th>
+                        <th>课程节次</th>
+                        <th>是否有作业</th>
+                        <th>作业标题</th>
+                        <th>教学情况</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for course_record_obj in course_record_objs %}
+
+                        <tr>
+                            <td target="{{ course_record_obj.id }}"><input type="checkbox" name="choice_id"></td>
+                            <td>{{ course_record_obj.from_class.course }}</td>
+                            <td>第{{ course_record_obj.day_num }}天</td>
+                            <td>{% if course_record_obj.has_homework %}
+                                有
+                            {% else %}
+                                无
+                            {% endif %}
+                            </td>
+                            <td>{{ course_record_obj.homework_title }}</td>
+
+                            <td><a href="{% url "teacher_study" course_record_obj.id %}">教学情况</a></td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </section>
+        </div>
+        </section>
+    </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        $("#init_record").click(
+                //批量初始化上课记录
+                function () {
+                    var course_record_ids = []
+                    $('input[name="choice_id"]').each(
+                            function () {
+                                if ($(this).prop("checked")) {
+                                    var id = $(this).parent().attr("target");
+                                    course_record_ids.push(id);
+                                }
+                            }
+                    )
+
+                    var csrftoken= $.cookie("csrftoken")
+
+                    $.ajax(
+                            {
+                                url:'{% url "init_studyecord" %}',
+                                type:"POST",
+                                data:{"course_record_ids":course_record_ids},
+                                headers:{"X-CSRFtoken":csrftoken},
+                                dataType:"JSON",
+                                traditional:true,
+                                success:function(args){
+                                    if (args.status){
+                                        alert(args.data)
+                                    }else{
+                                        alert(args.error)
+                                    }
+                                }
+                            }
+                    );
+
+
+                }
+        )
+
+        $("#choice_checkbox").click(
+                function () {
+                    var flag=false
+                    $('input[type="checkbox"]').each(
+                            function () {
+                                if ($(this).prop("checked")) {
+                                    $(this).prop("checked", false);
+                                    flag=false
+                                } else {
+                                    $(this).prop("checked", true);
+                                    flag=true
+                                }
+                            }
+                    )
+                    if (flag){
+                        $(this).prop("checked", true);
+                    }else {
+                        $(this).prop("checked", false);
+                    }
+                }
+        )
+    </script>
+{% endblock %}

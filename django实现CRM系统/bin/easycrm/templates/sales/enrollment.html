@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block pg-body %}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="panel-title">报名</div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal col-lg-8" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-lg-2">客户：</label>
+                    <div class="col-lg-5">
+                        {{ customer_obj.qq }}
+                    </div>
+
+                </div>
+                {% for field in form_obj %}
+                    <div class="form-group">
+                        <label class="col-lg-2">{{ field.label }}：</label>
+                        <div class="col-lg-5">
+                            {{ field }}
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="form-group">
+
+                    <input class=" btn btn-success pull-right" type="submit" value="下一步">
+                </div>
+            </form>
+            <div class="form-group">
+                <p class="col-lg-4">{{ form_obj.errors }}</p>
+            </div>
+            <div class="form-group">
+                {{ link_url.info }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

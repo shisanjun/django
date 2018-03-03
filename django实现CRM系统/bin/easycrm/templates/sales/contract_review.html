@@ -1,0 +1,58 @@
+<html>
+<head>
+    <title>审核页</title>
+    <!--common-->
+    <link href="/static/css/style.css" rel="stylesheet">
+    <link href="/static/css/style-responsive.css" rel="stylesheet">
+    <link href="/static/plugin/dropzone/dropzone.min.css" rel="stylesheet">
+    <link href="/static/plugin/dropzone/basic.min.css" rel="stylesheet">
+</head>
+<body style="background-color: white">
+<div class="container col-lg-8 col-lg-offset-2">
+    <div class="panel panel-success " style="border: 1px solid deepskyblue">
+        <div class="panel-heading">
+            <div class="panel-title">审核页</div>
+        </div>
+        <div class="panel-body">
+            <div class="form-horizontal">
+                <h3>客户信息</h3>
+                {% for field in customer_form %}
+
+                    <div class="form-group">
+                        <label class="col-lg-2">{{ field.label }}</label>
+                        <div class="col-lg-9">
+                            {{ field }}
+                        </div>
+                    </div>
+                {% endfor %}
+                <hr>
+                <h3>报名信息</h3>
+                {% for field in enroll_form_obj %}
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">{{ field.label }}</label>
+                        <div class="col-lg-8" disabled="disabled">
+                            {{ field }}
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="row">
+                    <br>
+                    <a class=" btn btn-danger pull-left" href="{% url "enroll_rejection"  enroll_obj.id %}">合同驳回</a>
+
+                    <a class=" btn btn-success pull-right" href="{% url "contract_review" enroll_obj.id  %}"> 审核通过</a>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/jquery-1.10.2.min.js"></script>
+<script src="/static/js/jquery-ui-1.9.2.custom.min.js"></script>
+<script src="/static/js/jquery-migrate-1.2.1.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/plugin/dropzone/dropzone.min.js"></script>
+</body>
+</html>

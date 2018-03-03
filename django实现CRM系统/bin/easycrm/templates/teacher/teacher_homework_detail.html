@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block pg-body %}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="panel-title">交作业</div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal" method="post">
+            {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">学生姓名:</label>
+                    <div class="col-lg-8">
+                      <input class="form-control" value="{{ study_obj.student.customer.name }}" readonly>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">学习课程:</label>
+                    <div class="col-lg-8">
+                        <input class="form-control" value="{{ study_obj.course_record }}" readonly>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">上课情况:</label>
+                    <div class="col-lg-8">
+                        {{ study_form.attendence }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">作业评分:</label>
+                    <div class="col-lg-8">
+                        {{ study_form.score }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">作业评语:</label>
+                    <div class="col-lg-8">
+                        {{ study_form.memo }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">下载作业:</label>
+                    <div class="col-lg-8">
+                        <ul>
+                            {% for file_name ,file_path in file_dict.items %}
+                                <li><a href="{% url "homework_down" file_path.0 file_path.1 file_path.2 file_path.3 file_path.4%}">{{ file_name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    <div class="col-lg-8">
+                        <input onclick="return delete_disabled()" class=" btn btn-info col-lg-4 col-lg-offset-6" type="submit" value="审批作业">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        function delete_disabled(){
+            $("form").find("[disabled]").removeAttrs("disabled");
+            return true
+        }
+    </script>
+{% endblock %}

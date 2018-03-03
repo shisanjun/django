@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load student_tag %}
+{% block pg-body %}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="panel-title">我的课程</div>
+        </div>
+        <div class="panel-body">
+            <section id="unseen">
+                <table class="table table-bordered table-striped table-condensed">
+                    <thead>
+                    <tr>
+                        <th>课程名称</th>
+                        <th>班级</th>
+                        <th class="numeric">开课日期</th>
+                        <th class="numeric">结业日期</th>
+                        <th class="numeric">课程进度</th>
+                        <th class="numeric">我的成绩</th>
+                        <th class="numeric">作业管理</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for enroll_obj in request.user.stu_account.enrollment_set.all %}
+
+                        <tr>
+
+                            <td>{{ enroll_obj.enroll_class.course }}</td>
+                            <td>{{ enroll_obj.enroll_class }}</td>
+                            <td>{{ enroll_obj.enroll_class.start_date }}</td>
+                            <td>{{ enroll_obj.enroll_class.end_date }}</td>
+                            <td>第{{ enroll_obj.enroll_class.courserecord_set.all.count }}天</td>
+                            <td>
+                                {% display_sum_score enroll_obj as score_obj %}
+                                {{ score_obj.sum_score |default_if_none:0}}
+                            </td>
+                            <td><a href="{% url "homework" enroll_obj.id %}">作业详情</a></td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </section>
+        </div>
+        </section>
+    </div>
+    </div>
+{% endblock %}

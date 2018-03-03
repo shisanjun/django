@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block pg-body %}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="panel-title">添加上课记录</div>
+        </div>
+        <div class="panel-body">
+            <div>
+                <ul>
+                    {% for error in course_record_form.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <form class="form-horizontal" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">班级名称:</label>
+                    <div class="col-lg-8">
+
+                        {{ classes_obj }}
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">第几节课:</label>
+                    <div class="col-lg-8">
+                        <input class="form-control" type="text" name="day_num">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">讲师名称:</label>
+                    <div class="col-lg-8">
+                        {{ request.user.name }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">是否有作业:</label>
+                    <div class="col-lg-8">
+                        {{ course_record_form.has_homework }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">作业标题:</label>
+                    <div class="col-lg-8">
+                        {{ course_record_form.homework_title }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">作业内容:</label>
+                    <div class="col-lg-8">
+                        {{ course_record_form.homework_content }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">本节课程大纲:</label>
+                    <div class="col-lg-8">
+                        {{ course_record_form.outline }}
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    <div class="col-lg-8">
+                        <input onclick="" class=" btn btn-info col-lg-4 col-lg-offset-6"
+                               type="submit" value="增加上课记录">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+
+
+{% endblock %}

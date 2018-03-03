@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load student_tag %}
+{% block pg-body %}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="panel-title">作业详情</div>
+        </div>
+        <div class="panel-body">
+            <section id="unseen">
+                <table class="table table-bordered table-striped table-condensed">
+                    <thead>
+                    <tr>
+                        <th>课程名称</th>
+                        <th>课程节次</th>
+                        <th>是否有作业</th>
+                        <th>作业标题</th>
+                        <th>作业分数</th>
+                        <th>交作业</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for course_record_obj in course_record_objs%}
+
+                        <tr>
+
+                            <td>{{course_record_obj.from_class.course }}</td>
+                            <td>第{{ course_record_obj.day_num }}天</td>
+                            <td>{{ course_record_obj.has_homework}}</td>
+                            <td>{{ course_record_obj.homework_title }}</td>
+                            <td>{% display_courserecord_score  enroll_obj  course_record_obj as courserecord_score %}
+                            {{ courserecord_score.score }}</td>
+                            <td><a href="{% url "homework_detail" course_record_obj.id %}">交作业</a></td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </section>
+        </div>
+        </section>
+    </div>
+    </div>
+{% endblock %}

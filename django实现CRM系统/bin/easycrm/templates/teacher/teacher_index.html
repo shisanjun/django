@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block pg-body %}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="panel-title">我的课程</div>
+        </div>
+        <div class="panel-body">
+            <section id="unseen">
+                <table class="table table-bordered table-striped table-condensed">
+                    <thead>
+                    <tr>
+                        <th>校区</th>
+                        <th>课程</th>
+                        <th>课程学期</th>
+                        <th>开班日期</th>
+                        <th>结束日期</th>
+                        <th>课程详情</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for class_obj in request.user.classlist_set.all %}
+
+                        <tr>
+
+                            <td>{{ class_obj.barach }}</td>
+                            <td>{{ class_obj.course }}</td>
+                            <td>{{ class_obj.semester}}</td>
+                            <td>{{ class_obj.start_date|date:"Y-m-d" }}</td>
+                            <td>{{ class_obj.end_date|date:"Y-m-d"}}</td>
+                            <td><a href="{% url "teacher_course" class_obj.id %}">课程详情</a></td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </section>
+        </div>
+        </section>
+    </div>
+    </div>
+{% endblock %}

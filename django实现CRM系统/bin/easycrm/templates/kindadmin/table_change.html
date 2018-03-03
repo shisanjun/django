@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load tag_filter %}
+{% block css %}
+    <style>
+        .select_css {
+            height: 100px;
+            width: 300px;
+        }
+    </style>
+{% endblock %}
+{% block pg-body %}
+    <div class="panel panel-info" style="margin: 10px">
+        <header class="panel-heading">
+           修改 {% render_app_name admin_class %}
+        </header>
+        <div class="panel-body">
+            {{ form_obj.errors }}
+            <form class="form-horizontal" role="form" method="post" onsubmit="return SelectAllChosenData();"
+                  id="change_form">
+                {{ field.errors }}
+                {% csrf_token %}
+                {% for field in form_obj %}
+                    <div class="form-group">
+                        {% if field.field.required %}<!--字段是否必须田写-->
+                            <label for="inputEmail1" class="col-lg-2 col-sm-2 control-label"
+                                   style="color: cadetblue">{{ field.label }}(*必填)：</label>
+                        {% else %}
+                            <label for="inputEmail1" class="col-lg-2 col-sm-2 control-label">{{ field.label }}：</label>
+                        {% endif %}
+                        <div class="col-lg-8">
+                            {% if field.name in admin_class.filter_horizontal %}
+                                <div class="col-lg-5 ">
+                                    {% get_m2m_obj_list admin_class field form_obj as m2m_obj_list %}
+                                    <select id="id_{{ field.name }}_from" multiple class="select_css">
+                                        {% if field.name in admin_class.readonly_fields %}
+                                            {% for obj in m2m_obj_list %}
+                                               <option value="{{ obj.id }}" disabled>{{ obj }}</option>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% for obj in m2m_obj_list %}
+                                                <option ondblclick="MoveElementTo(this,'id_{{ field.name }}_to','id_{{ field.name }}_from')"
+                                                        value="{{ obj.id }}">{{ obj.name }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                                <div class="col-lg-1">
+                                    箭头
+                                </div>
+                                <div class="col-lg-5">
+                                    {% get_m2m_selected_obj_list form_obj field as select_obj_list %}
+                                    <select tag="chosen_list" id="id_{{ field.name }}_to" multiple class="select_css"
+                                            name="{{ field.name }}">
+                                        {% if field.name in admin_class.readonly_fields %}
+                                            {% for obj in select_obj_list %}
+                                               <option value="{{ obj.id }}" disabled>{{ obj }}</option>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% for obj in select_obj_list %}
+                                                <option ondblclick="MoveElementTo(this,'id_{{ field.name }}_from','id_{{ field.name }}_to')"
+                                                        value="{{ obj.id }}">{{ obj.name }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                                <span style="color: red">{{ field.errors }}</span>
+                            {% else %}
+                                <!--这里需要在表单里面生成只读，原因页面是渲染好的-->
+                                {{ field }}
+                                <span style="color: red">{{ field.errors }}</span>
+                                <p>{{ field.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% if  not admin_class.readonly_table %}
+                <div class="form-group">
+                    <div class="col-lg-2">
+                        <a class="btn btn-success pull-right"
+                           href="{% url "table_delete"  app_name table_name form_obj.instance.id %}">删除</a>
+                    </div>
+                    <div class="col-lg-10">
+                        <input type="submit" class="btn btn-success pull-right  " value="保存">
+                    </div>
+                </div>
+            {% endif %}
+            </form>
+        </div>
+    </div>
+
+
+    {% block js %}
+        <script>
+            function MoveElementTo(ele, target_id, new_target_id) {
+                //var opt_ele="<option value='"+$(ele).val()+"' ondblclick='moveElement(this,'"+new_target_id+"','"+target_id+')>'+$(ele).text()+"</option>"
+
+                // var opt_ele='<option value="'+$(ele).val()+'" ondblclick="moveElement(this,""+new_target_id+","'+target_id+'")">'+$(ele).text()+"</option>"
+                var opt_ele = "<option value='" + $(ele).val() + "' ondblclick=MoveElementTo(this,'" + new_target_id + "','" + target_id + "')>" + $(ele).text() + "</option>"
+                console.log(opt_ele)
+                // $(ele).
+                //$(ele).appendTo("#"+target_id);
+                $("#" + target_id).append(opt_ele);
+                $(ele).remove();
+            }
+
+            //提交之前先选中右边
+            function SelectAllChosenData() {
+                $("select[tag='chosen_list'] option").each(
+                        function () {
+                            $(this).prop("selected", true);
+                        }
+                )
+
+                //去除diabled标签
+                $("form").find("[disabled]").removeAttr("disabled");
+                return true;
+            }
+        </script>
+    {% endblock %}
+{% endblock %}

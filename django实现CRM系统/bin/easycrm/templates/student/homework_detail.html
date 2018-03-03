@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load student_tag %}
+{% block pg-body %}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="panel-title">交作业</div>
+        </div>
+        <div class="panel-body">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-lg-2 text-center">班级名称:</label>
+                    <span class="col-lg-4 ">{{ course_record_obj.from_class }}</span>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 text-center">课程名称:</label>
+                    <span class="col-lg-4 ">{{ course_record_obj.from_class.course }}</span>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 text-center">讲师名称:</label>
+                    <span class="col-lg-4">{{ course_record_obj.teacher.name }}</span>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 text-center">课程节次:</label>
+                    <span class="col-lg-4">第{{ course_record_obj.day_num }}天</span>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 text-center">作业名称:</label>
+                    <span class="col-lg-4">{{ course_record_obj.homework_title }}</span>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 text-center">作业内容:</label>
+                    <pre class="col-lg-8">{{ course_record_obj.homework_content }}</pre>
+                </div>
+                <hr>
+                <p class="upload_response text-center"></p>
+                <p class="col-lg-2 text-center colorpicker">请上传作业</p>
+
+                <div class="col-lg-8">
+
+                    <form id="filedropzone" method="post" action="{{ request.path }}"
+                          class="dropzone dz-clickable">{% csrf_token %}
+                        <div class="dz-default dz-message">
+                            <div class="dz-icon icon-wrap icon-circle icon-wrap-md">
+                                <i class="fa fa-cloud-upload fa-3x"></i>
+                            </div>
+                            <div>
+                                <p class="text-muted">请将作业拖到这里</p>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+
+        $(document).ready(function () {
+
+            Dropzone.options.filedropzone = {
+                url: "{{ request.path }}",
+                paramName: "file", // The name that will be used to transfer the file
+                maxFilesize: 5, // MB,
+                addRemoveLinks: true,
+                maxFiles: 2,
+                uploadMultiple: true,
+                accept: function (file, done) {
+                    if (file.name.toString().search() == "justinbieber.jpg") {
+                        done("Naha, you don't.");
+                    }
+                    else {
+                        done();
+                    }
+                }
+            };
+
+
+            Dropzone.autoDiscover = false;
+            // or disable for specific dropzone:
+            // Dropzone.options.myDropzone = false;
+
+            myDropzone = new Dropzone("#filedropzone");
+            myDropzone.on("addedfile", function (file) {
+                /* Maybe display some more file information on your page */
+                console.log("add file")
+            });
+
+
+            myDropzone.on("maxfilesreached", function (file) {
+                /* Maybe display some more file information on your page */
+                alert("最多只能上传一个文件")
+            });
+
+            myDropzone.on("success", function (file, response) {
+                /* Maybe display some more file information on your page */
+                console.log('filex upload done...');
+                var tmp = JSON.parse(response).file_lists
+                var response = JSON.stringify(tmp.pop())
+                console.log(tmp, response)
+                $(".upload_response").text("作业上传成功："+response)
+                //location.reload();
+
+            });
+        });//end doc ready
+    </script>
+{% endblock %}
