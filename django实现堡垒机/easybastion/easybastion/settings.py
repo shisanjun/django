@@ -25,7 +25,7 @@ SECRET_KEY = 'bdy#!+9l#@w49imntpj@d7hb$$+zg8)4@+h9c@=hrsn9lyy)0-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'repository',
+    'web',
 ]
 
 MIDDLEWARE = [
@@ -120,6 +121,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATICFILES_DIRS=(
+    os.path.join(BASE_DIR,"static"),
+)
 #设置用户认证
 AUTH_USER_MODEL = 'repository.UserProfile'
+
+#验证用户没有登陆成功，返回URL
+LOGIN_URL="login"

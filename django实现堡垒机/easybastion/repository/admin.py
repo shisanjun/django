@@ -21,6 +21,10 @@ class HostGroupAdmin(admin.ModelAdmin):
 class RemoteUserAdmin(admin.ModelAdmin):
     list_display = ("username","auth_type","password")
 
+
+class BindUserHostsAdmin(admin.ModelAdmin):
+    list_display = ("host","host_user")
+
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
@@ -100,4 +104,4 @@ admin.site.register(models.IDC, IDCAdmin)
 admin.site.register(models.Host, HostAdmin)
 admin.site.register(models.HostGroup, HostGroupAdmin)
 admin.site.register(models.RemoteUser, RemoteUserAdmin)
-
+admin.site.register(models.BindUserHosts, BindUserHostsAdmin)

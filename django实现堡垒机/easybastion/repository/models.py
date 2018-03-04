@@ -33,19 +33,6 @@ class Host(models.Model):
         verbose_name="主机信息"
         verbose_name_plural="主机信息"
 
-class HostGroup(models.Model):
-    """
-    主机组
-    """
-    name=models.CharField(max_length=64,unique=True,verbose_name="主机组名称")
-    hosts=models.ManyToManyField(Host,verbose_name="主机")
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name="主机组"
-        verbose_name_plural="主机组"
 
 
 
@@ -72,13 +59,50 @@ class RemoteUser(models.Model):
         verbose_name_plural="主机用户"
 
 
-class BindHosts(models.Model):
+class BindUserHosts(models.Model):
     host=models.ForeignKey(Host,verbose_name="主机")
     host_user=models.ForeignKey(RemoteUser,verbose_name="主机用户")
 
+    def __str__(self):
+        return "%s--->%s" %(self.host.ip_addr,self.host_user)
+
     class Meta:
         unique_together=("host","host_user")
+        verbose_name="主机绑定主机用户"
+        verbose_name_plural="主机绑定主机用户"
 
+
+
+class HostGroup(models.Model):
+    """
+    主机组
+    """
+    name=models.CharField(max_length=64,unique=True,verbose_name="主机组名称")
+    hosts=models.ManyToManyField(BindUserHosts,verbose_name="主机")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name="主机组"
+        verbose_name_plural="主机组"
+
+
+class Session(models.Model):
+    user=models.ForeignKey("UserProfile",verbose_name="系统用户")
+    bind_host=models.ForeignKey("BindUserHosts",verbose_name="用户主机")
+    tag=models.CharField(max_length=128,default="N/A") #uuid
+    closed=models.BooleanField(default=False)
+    cmd_count=models.IntegerField(default=0)#命令执行数量
+    stay_time=models.IntegerField(default=0,help_text="每次刷新自动计算停留时间",verbose_name="停留时间(秒)")
+    create_time=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return "%s %s" %(self.user,self.bind_host)
+
+    class Meta:
+        verbose_name="审计日志"
+        verbose_name_plural="审计日志"
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, name, password=None):
@@ -123,7 +147,7 @@ class UserProfile(AbstractBaseUser):
     )
 
     name = models.CharField(max_length=64,verbose_name="用户名")
-    bind_host=models.ManyToManyField("Host",verbose_name="主机",blank=True)
+    bind_host=models.ManyToManyField("BindUserHosts",verbose_name="主机",blank=True)
     bind_group=models.ManyToManyField("HostGroup",verbose_name="主机组",blank=True)
     is_active = models.BooleanField(default=True,verbose_name="是否激活")
     is_admin = models.BooleanField(default=False,verbose_name="是否管理员")
