@@ -15,10 +15,16 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from web import views
+from web.views import user, func
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^index$', views.index,name="index"),
-    url(r'^login$', views.acc_login,name="login"),
-    url(r'^logout', views.acc_logout,name="logout"),
+    url(r'^$', user.acc_login, name="login"),
+    url(r'^login$', user.acc_login, name="login"),
+    url(r'^logout$', user.acc_logout, name="logout"),
+    url(r'^index$', func.index, name="index"),
+    url(r'^auditlog$', func.auditlog, name="auditlog"),
+    url(r'^loglist/(\d+)$', func.loglist, name="loglist"),
+    url(r'^multitask$', func.multitask, name="multitask"),
+    url(r'^multitask_cmd$', func.multitask_cmd, name="multitask_cmd"),
 ]

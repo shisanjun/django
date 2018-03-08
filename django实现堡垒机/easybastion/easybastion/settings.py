@@ -129,3 +129,12 @@ AUTH_USER_MODEL = 'repository.UserProfile'
 
 #验证用户没有登陆成功，返回URL
 LOGIN_URL="login"
+
+#自定义变量
+
+#审计日志存放路径
+AUDIT_LOG_IDR=os.path.join(BASE_DIR,"log")
+
+#批量任务执行脚本
+CMD_EXEC_PATH=os.path.join(BASE_DIR,"backend")
+

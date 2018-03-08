@@ -1,0 +1,111 @@
+{% extends "index.html" %}
+{% block title %}
+    用户审计
+{% endblock %}
+
+{% block page-title %}
+    用户审计
+{% endblock %}
+
+{% block page-content %}
+    <div class="panel">
+        <div class="panel-heading">
+            <h3 class="panel-title">操作审计用户({{ date_str }})</h3>
+        </div>
+
+        <!-- Foo Table - Add & Remove Rows -->
+        <!--===================================================-->
+        <div class="panel-body">
+            <div class="pad-btm form-inline">
+                <div class="row">
+                    <div class="col-sm-6 text-xs-center">
+                        <div class="form-group">
+                            <button id="demo-btn-addrow" class="btn btn-purple"><i class="demo-pli-plus"></i> Add New
+                                Row
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 text-xs-center text-right">
+                        <div class="form-group">
+                            <input id="demo-input-search2" type="text" placeholder="Search" class="form-control"
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table id="demo-foo-addrow"
+                   class="table table-bordered table-hover toggle-circle footable-loaded footable default"
+                   data-page-size="7">
+                <thead>
+                <tr>
+                    <th data-sort-ignore="true" class="min-width footable-visible footable-first-column"></th>
+                    <th data-sort-initial="true" data-toggle="true"
+                        class="footable-visible footable-sortable footable-sorted">日期<span
+                            class="footable-sort-indicator"></span></th>
+                    <th class="footable-visible footable-sortable"><span
+                            class="footable-sort-indicator">会话ID</span></th>
+                    <th class="footable-visible footable-sortable"><span
+                            class="footable-sort-indicator">系统用户名</span></th>
+                    <th class="footable-visible footable-sortable"><span
+                            class="footable-sort-indicator">登录的主机名称</span></th>
+                    <th class="footable-visible footable-sortable"><span
+                            class="footable-sort-indicator">登录的主机IP</span></th>
+                    <th class="footable-visible footable-sortable"><span
+                            class="footable-sort-indicator">登录的主机用户名</span></th>
+                    <th class="footable-visible footable-sortable"><span
+                            class="footable-sort-indicator">停留时间</span></th>
+                    <th class="footable-visible footable-last-column footable-sortable">操作次数<span
+                            class="footable-sort-indicator"></span></th>
+                    <th class="footable-visible footable-last-column footable-sortable">查看详细操作日志<span
+                            class="footable-sort-indicator"></span></th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                {% for session_obj in session_objs %}
+                    <tr class="footable-even" style="display: table-row;">
+                        <td class="footable-visible footable-first-column">
+                            <button class="demo-delete-row btn btn-danger btn-xs"><i class="demo-pli-cross"></i>
+                            </button>
+                        </td>
+                        <td class="footable-visible"><span class="footable-toggle">{{ date_str }}</span></td>
+                        <td class="footable-visible"><span class="footable-toggle">{{ session_obj.id }}</span></td>
+                        <td class="footable-visible"><span class="footable-toggle">{{ session_obj.user.name }}</span>
+                        </td>
+                        <td class="footable-visible"><span
+                                class="footable-toggle">{{ session_obj.bind_host.host.hostname }}</span></td>
+                        <td class="footable-visible"><span
+                                class="footable-toggle">{{ session_obj.bind_host.host.ip_addr }}</span></td>
+                        <td class="footable-visible"><span
+                                class="footable-toggle">{{ session_obj.bind_host.host_user.username }}</span></td>
+                        <td class="footable-visible"><span
+                                class="footable-toggle">{{ session_obj.bind_host.host_user.username }}</span></td>
+                        <td class="footable-visible"><span
+                                class="footable-toggle">{{ session_obj.bind_host.host_user.username }}</span></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="10" class="footable-visible">
+                        <div class="text-right">
+                            <ul class="pagination">
+                                <li class="footable-page-arrow disabled"><a data-page="first" href="#first">«</a></li>
+                                <li class="footable-page-arrow disabled"><a data-page="prev" href="#prev">‹</a></li>
+                                <li class="footable-page active"><a data-page="0" href="#">1</a></li>
+                                <li class="footable-page"><a data-page="1" href="#">2</a></li>
+                                <li class="footable-page-arrow"><a data-page="next" href="#next">›</a></li>
+                                <li class="footable-page-arrow"><a data-page="last" href="#last">»</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+        <!--===================================================-->
+        <!-- End Foo Table - Add & Remove Rows -->
+
+    </div>
+{% endblock %}

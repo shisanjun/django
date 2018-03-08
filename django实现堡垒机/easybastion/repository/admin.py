@@ -25,6 +25,19 @@ class RemoteUserAdmin(admin.ModelAdmin):
 class BindUserHostsAdmin(admin.ModelAdmin):
     list_display = ("host","host_user")
 
+
+class TaskAdmin(admin.ModelAdmin):
+    list_display = ("id","user","task_type","content","c_time")
+    fields = ("user","task_type","content",)
+
+class TaskLogDetailAdmin(admin.ModelAdmin):
+    list_display = ("task","bind_host","result","status","c_time","end_time")
+
+    # def show_bind_host(self):
+    #     return "%s %s" %("bind_host.host.ip_addr","bind_host.user_host.username")
+    #
+    # show_bind_host.short_description = "bind host"
+
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
@@ -105,3 +118,5 @@ admin.site.register(models.Host, HostAdmin)
 admin.site.register(models.HostGroup, HostGroupAdmin)
 admin.site.register(models.RemoteUser, RemoteUserAdmin)
 admin.site.register(models.BindUserHosts, BindUserHostsAdmin)
+admin.site.register(models.Tasks, TaskAdmin)
+admin.site.register(models.TaskLogDetail, TaskLogDetailAdmin)

@@ -4,6 +4,10 @@ __author__ = "shisanjun"
 from django.contrib.auth import authenticate
 import subprocess
 import uuid
+import os,datetime
+from django.conf import settings
+from backend.make_session import MakeSession
+from backend.audit import AuditLogAnalysis
 class HostManage(object):
 
     def interactive(self):
@@ -65,8 +69,19 @@ class HostManage(object):
                     #生成需要监控的ssh的uuid
                     ssh_tag=uuid.uuid4()
 
+                    session_obj=MakeSession()
+                    session_id=session_obj.session(user=self.user,bind_host=bind_host,tag=ssh_tag)
+
+                    today=datetime.date.today().strftime("%Y%m%d")
+                    log_path=os.path.join(settings.BASE_DIR,"log",today)
+                    if not os.path.exists(log_path):
+                        os.makedirs(log_path,exist_ok=True)
+
                     #在登陆主机前监控到主机登陆后的pid
-                    content=subprocess.Popen("sh /home/easybastion/backend/get_ssh_pid.sh %s" %ssh_tag ,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
+                    content=subprocess.Popen("sh %s/get_ssh_pid.sh %s %s %s" %(os.path.join(settings.BASE_DIR,"backend"), ssh_tag,session_id,log_path) ,
+                                             stdout=subprocess.PIPE,
+                                             stderr=subprocess.PIPE,
+                                             shell=True)
                     #print(content.stdout.read(),content.stderr.read())
 
                     #获取主机IP，主机用户和密码
@@ -89,4 +104,10 @@ class HostManage(object):
 
                     elif host_type==1:#1 代表秘钥免密码登陆
                         subprocess.run("ssh %s" %host_ip,shell=True)
+
+                    #日志分析
+
+                    logfile=os.path.join(log_path,"session_%s_%s.log" %(session_id,ssh_tag))
+                    audit_obj=AuditLogAnalysis(logfile)
+                    audit_obj.parse()
 

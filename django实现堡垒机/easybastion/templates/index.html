@@ -251,7 +251,8 @@
                                             <li>
                                                 <form role="form" class="form">
                                                     <div class="form-group">
-                                                        <label class="dropdown-header" for="demo-megamenu-input">Newsletter</label>
+                                                        <label class="dropdown-header"
+                                                               for="demo-megamenu-input">Newsletter</label>
                                                         <input id="demo-megamenu-input" type="email"
                                                                placeholder="Enter email" class="form-control">
                                                     </div>
@@ -338,7 +339,7 @@
                                     <!--<img class="img-circle img-user media-object" src="/static/img/av1.png" alt="Profile Picture">-->
                                     <i class="ti-face-smile ic-user"></i>
                                 </span>
-                                <div class="username hidden-xs">John Doe</div>
+                                <div class="username hidden-xs">{{ request.user.name }}</div>
                             </a>
 
 
@@ -445,7 +446,7 @@
                 <!--===================================================-->
                 <div id="page-content">
 
-                    {% block content %}
+                    {% block page-content %}
                     {% endblock %}
                 </div>
 
@@ -541,10 +542,10 @@
 
                                     <!--Menu list item-->
                                     <li>
-                                        <a href="#">
+                                        <a href="{% url "auditlog" %}">
                                             <i class="ti-alarm-clock"></i>
 						                    <span class="menu-title">
-												<strong>Bolder</strong>
+												<strong>审计日志</strong>
 											</span>
                                         </a>
                                     </li>
@@ -554,7 +555,7 @@
                                         <a href="#">
                                             <i class="ti-calendar"></i>
 						                    <span class="menu-title">
-												With label
+												webssh
 												<span class="label label-success pull-right">New</span>
 											</span>
                                         </a>
@@ -579,15 +580,15 @@
                                         <a href="#">
                                             <i class="ti-pencil-alt2"></i>
 						                    <span class="menu-title">
-												<strong>Bolder</strong>
+												<strong>主机管理</strong>
 											</span>
                                             <i class="arrow"></i>
                                         </a>
 
                                         <!--Submenu-->
                                         <ul class="collapse">
-                                            <li><a href="#">Link</a></li>
-                                            <li><a href="#">Another link</a></li>
+                                            <li><a href="{% url "multitask" %}">批量执行命令</a></li>
+                                            <li><a href="#">批量上传</a></li>
                                             <li><a href="#">Some else here</a></li>
                                             <li class="list-divider"></li>
                                             <li><a href="#">Separate link</a></li>
@@ -639,255 +640,57 @@
 
                                     <li class="list-divider"></li>
 
-                                    <!--Category name-->
-                                    <li class="list-header">Multi level</li>
-
-                                    <!--Menu list item-->
-                                    <li>
-                                        <a href="#">
-                                            <i class="ti-support"></i>
-                                            <span class="menu-title">Menu Level</span>
-                                            <i class="arrow"></i>
-                                        </a>
-
-                                        <!--Submenu-->
-                                        <ul class="collapse">
-                                            <li><a href="#">Second Level Item</a></li>
-                                            <li><a href="#">Second Level Item</a></li>
-                                            <li><a href="#">Second Level Item</a></li>
-                                            <li class="list-divider"></li>
-                                            <li>
-                                                <a href="#">Third Level<i class="arrow"></i></a>
-
-                                                <!--Submenu-->
-                                                <ul class="collapse">
-                                                    <li><a href="#">Third Level Item</a></li>
-                                                    <li><a href="#">Third Level Item</a></li>
-                                                    <li><a href="#">Third Level Item</a></li>
-                                                    <li><a href="#">Third Level Item</a></li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">Third Level<i class="arrow"></i></a>
-
-                                                <!--Submenu-->
-                                                <ul class="collapse">
-                                                    <li><a href="#">Third Level Item</a></li>
-                                                    <li><a href="#">Third Level Item</a></li>
-                                                    <li><a href="#">Third Level Item</a></li>
-                                                    <li class="list-divider"></li>
-                                                    <li><a href="#">Third Level Item</a></li>
-                                                    <li><a href="#">Third Level Item</a></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
-
                                 </ul>
 
 
-                                <!--Widget-->
-                                <!--================================-->
-                                <div class="mainnav-widget">
-
-                                    <!-- Show the button on collapsed navigation -->
-                                    <div class="show-small">
-                                        <a href="#" data-toggle="menu-widget" data-target="#demo-wg-server">
-                                            <i class="fa fa-desktop"></i>
-                                        </a>
-                                    </div>
-
-                                    <!-- Hide the content on collapsed navigation -->
-                                    <div id="demo-wg-server" class="hide-small mainnav-widget-content">
-                                        <ul class="list-group">
-                                            <li class="list-header pad-no pad-ver">Simple Widget</li>
-                                            <li class="mar-btm">
-                                                <span class="label label-primary pull-right">15%</span>
-                                                <p>CPU Usage</p>
-                                                <div class="progress progress-sm">
-                                                    <div class="progress-bar progress-bar-primary" style="width: 15%;">
-                                                        <span class="sr-only">15%</span>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="mar-btm">
-                                                <span class="label label-purple pull-right">75%</span>
-                                                <p>Bandwidth</p>
-                                                <div class="progress progress-sm">
-                                                    <div class="progress-bar progress-bar-purple" style="width: 75%;">
-                                                        <span class="sr-only">75%</span>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="pad-ver"><a href="#" class="btn btn-success btn-bock">View
-                                                Details</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!--================================-->
-                                <!--End widget-->
-
                             </div>
-                        </div>
-                    </div>
-                    <!--================================-->
-                    <!--End menu-->
 
+                        </div>
+
+                        <!-- FOOTER -->
+                        <!--===================================================-->
+                        <footer id="footer">
+
+                            <!-- Visible when footer positions are fixed -->
+                            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+                            <div class="show-fixed pull-right">
+                                You have <a href="#" class="text-bold text-main"><span
+                                    class="label label-danger">3</span>
+                                pending
+                                action.</a>
+                            </div>
+
+
+                            <!-- Visible when footer positions are static -->
+                            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+                            <div class="hide-fixed pull-right pad-rgt">
+                                14GB of <strong>512GB</strong> Free.
+                            </div>
+
+
+                            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+                            <!-- Remove the class "show-fixed" and "hide-fixed" to make the content always appears. -->
+                            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+                            <p class="pad-lft">&#0169; 李祥</p>
+
+
+                        </footer>
+                        <!--===================================================-->
+                        <!-- END FOOTER -->
+
+
+                        <!-- SCROLL PAGE BUTTON -->
+                        <!--===================================================-->
+                        <button class="scroll-top btn">
+                            <i class="pci-chevron chevron-up"></i>
+                        </button>
+                        <!--===================================================-->
+
+
+                    </div>
                 </div>
             </nav>
-            <!--===================================================-->
-            <!--END MAIN NAVIGATION-->
-
-            <!--ASIDE-->
-            <!--===================================================-->
-            <aside id="aside-container">
-                <div id="aside">
-                    <div class="nano">
-                        <div class="nano-content">
-
-                            <!--Nav tabs-->
-                            <!--================================-->
-                            <ul class="nav nav-tabs nav-justified">
-                                <li class="active">
-                                    <a href="#demo-asd-tab-1" data-toggle="tab">
-                                        <i class="ti-comments"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#demo-asd-tab-2" data-toggle="tab">
-                                        <i class="ti-info-alt"></i>
-                                        Reports
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#demo-asd-tab-3" data-toggle="tab">
-                                        <i class="ti-settings"></i>
-                                        Settings
-                                    </a>
-                                </li>
-                            </ul>
-                            <!--================================-->
-                            <!--End nav tabs-->
-
-
-                            <!-- Tabs Content -->
-                            <!--================================-->
-                            <div class="tab-content">
-
-                                <!--First tab-->
-                                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                                <div class="tab-pane fade in active" id="demo-asd-tab-1">
-                                    <p class="pad-all text-lg">First tab</p>
-                                    <div class="pad-hor">
-                                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-                                        sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat
-                                        volutpat.
-                                        Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit
-                                        lobortis nisl
-                                        ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit
-                                        in vulputate
-                                        velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at
-                                        vero eros et accumsan
-                                        et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis
-                                        dolore te feugait nulla facilisi.
-                                    </div>
-                                </div>
-                                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                                <!--End first tab-->
-
-
-                                <!--Second tab-->
-                                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                                <div class="tab-pane fade" id="demo-asd-tab-2">
-                                    <p class="pad-all text-lg">Second tab</p>
-                                    <div class="pad-hor">
-                                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-                                        sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat
-                                        volutpat.
-                                        Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit
-                                        lobortis nisl
-                                        ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit
-                                        in vulputate
-                                        velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at
-                                        vero eros et accumsan
-                                        et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis
-                                        dolore te feugait nulla facilisi.
-                                    </div>
-                                </div>
-                                <!--End second tab-->
-                                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-
-
-                                <!--Third tab-->
-                                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                                <div class="tab-pane fade" id="demo-asd-tab-3">
-                                    <p class="pad-all text-lg">Third tab</p>
-                                    <div class="pad-hor">
-                                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-                                        sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat
-                                        volutpat.
-                                        Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit
-                                        lobortis nisl
-                                        ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit
-                                        in vulputate
-                                        velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at
-                                        vero eros et accumsan
-                                        et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis
-                                        dolore te feugait nulla facilisi.
-                                    </div>
-                                </div>
-                                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </aside>
-            <!--===================================================-->
-            <!--END ASIDE-->
-
         </div>
-
-
-        <!-- FOOTER -->
-        <!--===================================================-->
-        <footer id="footer">
-
-            <!-- Visible when footer positions are fixed -->
-            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-            <div class="show-fixed pull-right">
-                You have <a href="#" class="text-bold text-main"><span class="label label-danger">3</span> pending
-                action.</a>
-            </div>
-
-
-            <!-- Visible when footer positions are static -->
-            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-            <div class="hide-fixed pull-right pad-rgt">
-                14GB of <strong>512GB</strong> Free.
-            </div>
-
-
-            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-            <!-- Remove the class "show-fixed" and "hide-fixed" to make the content always appears. -->
-            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-
-            <p class="pad-lft">&#0169; 李祥</p>
-
-
-        </footer>
-        <!--===================================================-->
-        <!-- END FOOTER -->
-
-
-        <!-- SCROLL PAGE BUTTON -->
-        <!--===================================================-->
-        <button class="scroll-top btn">
-            <i class="pci-chevron chevron-up"></i>
-        </button>
-        <!--===================================================-->
-
-
     </div>
-
 {% endblock %}

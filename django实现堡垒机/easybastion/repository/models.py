@@ -33,9 +33,6 @@ class Host(models.Model):
         verbose_name="主机信息"
         verbose_name_plural="主机信息"
 
-
-
-
 class RemoteUser(models.Model):
     """
     存储远程用户名密码
@@ -88,7 +85,7 @@ class HostGroup(models.Model):
         verbose_name_plural="主机组"
 
 
-class Session(models.Model):
+class Sessions(models.Model):
     user=models.ForeignKey("UserProfile",verbose_name="系统用户")
     bind_host=models.ForeignKey("BindUserHosts",verbose_name="用户主机")
     tag=models.CharField(max_length=128,default="N/A") #uuid
@@ -182,3 +179,45 @@ class UserProfile(AbstractBaseUser):
     class Meta:
         verbose_name="系统用户"
         verbose_name_plural="系统用户"
+
+class Tasks(models.Model):
+    """
+    批量任务记录表
+    """
+    user=models.ForeignKey("UserProfile")
+    task_type_choices=(
+        (0,"cmd"),
+        (1,"file_transfer")
+    )
+    task_type=models.SmallIntegerField(choices=task_type_choices)
+    content=models.TextField(verbose_name="任务内容")
+    c_time=models.DateTimeField(auto_now_add=True,blank=True,null=True)
+
+    def __str__(self):
+        return "%s %s" %(self.id,self.content)
+
+
+    class Meta:
+        verbose_name="操作任务"
+        verbose_name_plural="操作任务"
+
+class TaskLogDetail(models.Model):
+    task=models.ForeignKey("Tasks")
+    bind_host=models.ForeignKey("BindUserHosts")
+    result=models.TextField()
+
+    status_choices=(
+        (0,'success'),
+        (1,"failed"),
+        (2,"init")
+    )
+    status=models.SmallIntegerField(choices=status_choices)
+    c_time=models.DateTimeField(auto_now_add=True,blank=True,null=True)
+    end_time=models.DateTimeField(auto_now=True,blank=True,null=True)
+
+    def __str__(self):
+        return "%s %s@%s " %(self.task.id,self.bind_host.host.ip_addr,self.bind_host.host_user.username)
+
+    class Meta:
+        verbose_name="操作任务详情"
+        verbose_name_plural="操作任务详情"

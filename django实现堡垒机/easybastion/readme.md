@@ -17,3 +17,12 @@ sshpass -p 123456 ssh root@192.168.1.1
 
 #subprocess 不能使用Popen方法会退出
 	使用run方法，退出可以正常回到ptyhon下面
+
+
+#依赖包
+sshpass
+paramiko
+theadpool
+gevent并发使用协程
+
+from concurrent.futures import ThreadPoolExecute

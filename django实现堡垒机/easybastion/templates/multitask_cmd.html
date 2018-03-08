@@ -1,0 +1,158 @@
+{% extends "index.html" %}
+{% block title %}
+    批量执行命令
+{% endblock %}
+
+{% block page-title %}
+    批量执行命令
+{% endblock %}
+
+{% block page-content %}
+    <div class="alert alert-warning fade in hide " id="warning_div">
+        <button class="close" data-dismiss="alert"><span>×</span></button>
+        <strong>Warning!</strong> 主机没有选择或者执行命令没有输入
+    </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">主机(组)列表</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="list-group form-block">
+                        {% for group in request.user.bind_group.select_related %}
+
+                            <label class="form-checkbox form-normal form-primary active form-text"
+                                   onclick="HostListDisplay(this)">
+                                <input target="f_check" type="checkbox" onclick="selectAllCheckbox(this)">
+                                <a class="list-group-item" href="#">
+                                    {{ group }}
+                                    <span class="badge badge-primary">{{ group.hosts.all.count }}</span>
+                                </a>
+                            </label>
+                            <ul class="hide list-group">
+                                {% for bind_host in group.hosts.select_related %}
+
+                                    <li class="list-group-item list-item-sm">
+                                        <input target="checkbox_host" type="checkbox">
+                                        <span class="hide">{{ bind_host.id }}</span>
+                                        <span>{{ bind_host.host.ip_addr }}@{{ bind_host.host_user.username }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+                        {% endfor %}
+
+                        <label class="form-checkbox form-normal form-primary active form-text"
+                               onclick="HostListDisplay(this)">
+                            <input type="checkbox" onclick="selectAllCheckbox(this)">
+                            <a class="list-group-item" href="#">
+                                未分组主机
+                                <span class="badge badge-primary">{{ request.user.bind_host.count }}</span>
+                            </a>
+                        </label>
+                        <ul class="hide list-group">
+                            {% for hosts in  request.user.bind_host.select_related %}
+
+                                <li class="list-group-item list-item-sm">
+                                    <input target="checkbox_host" type="checkbox" onclick="(this)">
+                                    <span class="hide">{{ hosts.id }}</span>
+                                    <span>{{ hosts.host.ip_addr }}@{{ hosts.host_user.username }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="panel  panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">操作命令</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row" id="cmd_div">
+                        <textarea id="cmd_text" class="form-control" type="text" placeholder="请输入执行命令"></textarea>
+                        <br>
+                        <input id="submit_cmd" class="col-lg-2 btn btn-danger pull-right" type="submit" value="执行命令">
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">操作结果</h3>
+                </div>
+                <div class="panel-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        function HostListDisplay(ele) {
+            $(ele).next().toggleClass("hide");
+        }
+
+        function selectAllCheckbox(ele) {
+
+            $(ele).parent().next().find("input").prop("checked", $(ele).prop("checked"))
+
+        }
+
+        $("#cmd_div").on("click", "#submit_cmd", function () {
+            var select_host_list = []
+            //标记有没有选择主机
+            var host_select_tag = false
+            //标记有没有输入命令
+            var cmd_tag = false
+            $('input[target="checkbox_host"]').each(
+                    function () {
+                        if ($(this).prop("checked")) {
+                            var host = $(this).next().text();
+                            select_host_list.push(host)
+                            host_select_tag = true
+                        }
+                    }
+            )
+
+
+            var exec_cmd = $("#cmd_text").val()
+            if (exec_cmd.length != 0) {
+                cmd_tag = true
+
+            }
+
+
+            //弹出警告
+            if (host_select_tag && cmd_tag) {
+                $("#warning_div").addClass("hide");
+
+                var csrftoken = $.cookie("csrftoken");
+                //传递后台
+                $.ajax({
+                    url: "{% url "multitask_cmd" %}",
+                    type: "POST",
+                    data: {"select_host_list": select_host_list, "exec_cmd": exec_cmd, "task_type": 0},
+                    headers: {"X-CSRFtoken": csrftoken},
+                    transctions: true,
+                    dataType: "JSON",
+                    success: function (thr) {
+                        if (thr.status){
+                            alert(thr.data)
+                        }else {
+                            alert(thr.error)
+                        }
+                    }
+                })
+
+            } else {
+                $("#warning_div").removeClass("hide");
+            }
+
+        })
+    </script>
+{% endblock %}
