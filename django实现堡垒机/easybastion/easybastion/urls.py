@@ -27,4 +27,5 @@ urlpatterns = [
     url(r'^loglist/(\d+)$', func.loglist, name="loglist"),
     url(r'^multitask$', func.multitask, name="multitask"),
     url(r'^multitask_cmd$', func.multitask_cmd, name="multitask_cmd"),
+    url(r'^taskresult$', func.taskresult, name="taskresult"),
 ]

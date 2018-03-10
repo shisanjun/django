@@ -48,7 +48,7 @@ class RemoteUser(models.Model):
     password=models.CharField(max_length=128,blank=True,null=True,verbose_name="主机用户密码")
 
     def __str__(self):
-        return "%s(%s)" %(self.username,self.password)
+        return "%s" %(self.username)
 
     class Meta:
         unique_together=("username","auth_type","password")

@@ -26,7 +26,7 @@ def ssh_cmd(task_detail_obj):
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
     try:
         # 远程验证
-        ssh.connect(hostname=hostip, port=port, username=username, password=password)
+        ssh.connect(hostname=hostip, port=port, username=username, password=password,timeout=10)
         # 执行命令
         stdin, stdout, stderr = ssh.exec_command(content)
         #获取结果

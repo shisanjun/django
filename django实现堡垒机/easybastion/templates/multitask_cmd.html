@@ -83,7 +83,8 @@
                     <h3 class="panel-title">操作结果</h3>
                 </div>
                 <div class="panel-body">
-
+                    <ul class="list-group" id="result_div_ul">
+                    </ul>
                 </div>
             </div>
         </div>
@@ -93,6 +94,8 @@
 
 {% block js %}
     <script>
+        var csrftoken = $.cookie("csrftoken");
+
         function HostListDisplay(ele) {
             $(ele).next().toggleClass("hide");
         }
@@ -126,33 +129,120 @@
 
             }
 
+            var ul = $("#result_div_ul")
+            ul.empty()
 
             //弹出警告
             if (host_select_tag && cmd_tag) {
                 $("#warning_div").addClass("hide");
 
-                var csrftoken = $.cookie("csrftoken");
+
                 //传递后台
                 $.ajax({
-                    url: "{% url "multitask_cmd" %}",
-                    type: "POST",
-                    data: {"select_host_list": select_host_list, "exec_cmd": exec_cmd, "task_type": 0},
-                    headers: {"X-CSRFtoken": csrftoken},
-                    transctions: true,
-                    dataType: "JSON",
-                    success: function (thr) {
-                        if (thr.status){
-                            alert(thr.data)
-                        }else {
-                            alert(thr.error)
+                            url: "{% url "multitask_cmd" %}",
+                            type: "POST",
+                            data: {"select_host_list": select_host_list, "exec_cmd": exec_cmd, "task_type": 0},
+                            headers: {"X-CSRFtoken": csrftoken},
+                            transctions: true,
+                            dataType: "JSON",
+                            success: function (thr) {
+
+                                console.log("return", thr)
+                                if (thr.status) {
+                                    var hosts = thr.data
+
+                                    //绑定前先清空ul内容
+                                    for (index in hosts) {
+                                        //[(2, '192.167.2.2', 'Authentication failed.', 1)]  (id,host,result,status)
+
+
+                                        var li = document.createElement("li");
+                                        li.setAttribute("class", "list-group-item");
+                                        li.setAttribute("target", hosts[index][0]);
+                                        li.innerText = "主机:" + hosts[index][1];
+                                        var span = document.createElement("span");
+                                        span.setAttribute("class", "badge badge-primary");
+
+                                        span.innerText = "状态:" + "开始执行";
+                                        li.appendChild(span);
+                                        var pre = document.createElement("pre");
+                                        pre.innerText = "init...";
+                                        li.appendChild(pre);
+                                        ul.append(li)
+                                    }
+
+
+                                    //全局变量调用定时任务
+                                    ResultRefresh = setInterval(
+                                            function () {
+
+                                                show_cmd_result(thr.task_id)
+                                            }, 1000
+                                    );
+
+                                } else {
+                                    alert(thr.error)
+                                }
+                            }
                         }
-                    }
-                })
+                )
+                //执行命令没有结束前，不允许在执行
+                $(this).attr("disabled", true)
 
             } else {
                 $("#warning_div").removeClass("hide");
             }
 
         })
+
+
+        //定时任务
+        function show_cmd_result(task_id) {
+            $.getJSON(
+                    "{% url "taskresult" %}",
+                    {"task_id": task_id},
+                    function (callback) {
+                        var result_flag = true
+                        $.each(callback,
+                                function (index, ele) {
+                                    var li_ele = $("li[target='" + ele["id"] + "']");
+
+                                    var span = li_ele.children("span")
+                                    //修改执行状态
+                                    var status = ele["status"]
+                                    if (status == 0) {
+                                        host_status_info = "成功"
+                                        span.attr("class", "badge badge-success");
+                                    }
+                                    if (status == 1) {
+                                        host_status_info = "失败"
+                                        span.attr("class", "badge badge-danger");
+                                    }
+                                    if (status == 2) {
+                                        host_status_info = "初始化"
+                                        span.attr("class", "badge badge-purple");
+                                    }
+                                    span.text("状态"+host_status_info)
+
+                                    li_ele.children().next().text(ele["result"]);
+
+                                    if (ele["status"] == 2) {
+                                        result_flag = false;
+                                    } else {
+                                        result_flag = true;
+                                    }
+                                })
+                        if (result_flag) {
+                            //取消定时器
+                            clearInterval(ResultRefresh);
+                            //回复执行按钮
+                            $("#submit_cmd").removeAttr("disabled")
+
+
+                        }
+                    }
+            )
+
+        }
     </script>
 {% endblock %}

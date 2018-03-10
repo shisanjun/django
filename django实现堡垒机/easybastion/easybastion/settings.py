@@ -136,5 +136,5 @@ LOGIN_URL="login"
 AUDIT_LOG_IDR=os.path.join(BASE_DIR,"log")
 
 #批量任务执行脚本
-CMD_EXEC_PATH=os.path.join(BASE_DIR,"backend")
+CMD_EXEC_FILE=os.path.join(BASE_DIR,"backend","task_runner.py")
 

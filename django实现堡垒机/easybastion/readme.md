@@ -26,3 +26,11 @@ theadpool
 gevent并发使用协程
 
 from concurrent.futures import ThreadPoolExecute
+
+#JS变量不能传递给模板变量,要当作参数传递
+比如：
+function GetTaskResult(task_id){
+$.getJson("{%url 'task_reslut' %}",{"task_id":task_id},funcion(callback){
+ }
+})
+}

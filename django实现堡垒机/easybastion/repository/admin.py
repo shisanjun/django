@@ -31,7 +31,7 @@ class TaskAdmin(admin.ModelAdmin):
     fields = ("user","task_type","content",)
 
 class TaskLogDetailAdmin(admin.ModelAdmin):
-    list_display = ("task","bind_host","result","status","c_time","end_time")
+    list_display = ("id","task","bind_host","result","status","c_time","end_time")
 
     # def show_bind_host(self):
     #     return "%s %s" %("bind_host.host.ip_addr","bind_host.user_host.username")

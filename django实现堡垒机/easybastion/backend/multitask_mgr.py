@@ -1,6 +1,8 @@
 # _*_ coding:utf-8 _*_
 __author__ = "shisanjun"
+import subprocess,time
 from repository import models
+from django.conf import settings
 class MultiTaskManage(object):
 
     def __init__(self,request):
@@ -17,6 +19,7 @@ class MultiTaskManage(object):
 
     def call_task(self):
         self.task_parse()
+
         if self.task_type=="0":#批量命令
             self.task_cmd()
         elif self.task_type=="1":#批量文件传输
@@ -32,7 +35,7 @@ class MultiTaskManage(object):
         #分配任务ID
 
         task_obj=models.Tasks.objects.create(user=self.request.user,task_type=self.task_type,content=self.exec_cmd)
-        print(task_obj)
+
         self.task_id=task_obj.id
         #批量初始化分配主机详情
         task_detail_list=[]
@@ -45,6 +48,9 @@ class MultiTaskManage(object):
             ))
         models.TaskLogDetail.objects.bulk_create(task_detail_list)
 
+
+        #调用独立进程task_runner.py,跑任务结果（不能使用线程，主线程退出，子线程也会退出）
+        subprocess.Popen("python %s %s" %(settings.CMD_EXEC_FILE,task_obj.id),shell=True,stderr=subprocess.PIPE,stdout=subprocess.PIPE)
 
 
     def task_file_transfer(self):
