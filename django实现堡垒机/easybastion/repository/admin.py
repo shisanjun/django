@@ -8,7 +8,6 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from repository import models
 
-
 class IDCAdmin(admin.ModelAdmin):
     list_display = ("name",)
 
@@ -37,6 +36,15 @@ class TaskLogDetailAdmin(admin.ModelAdmin):
     #     return "%s %s" %("bind_host.host.ip_addr","bind_host.user_host.username")
     #
     # show_bind_host.short_description = "bind host"
+
+class RoleAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+
+class MenuOneAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+
+class MenuTwoAdmin(admin.ModelAdmin):
+    list_display = ("name","url_type","url_path","enable","menu_one")
 
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
@@ -120,3 +128,6 @@ admin.site.register(models.RemoteUser, RemoteUserAdmin)
 admin.site.register(models.BindUserHosts, BindUserHostsAdmin)
 admin.site.register(models.Tasks, TaskAdmin)
 admin.site.register(models.TaskLogDetail, TaskLogDetailAdmin)
+admin.site.register(models.Role, RoleAdmin)
+admin.site.register(models.MenuOne, MenuOneAdmin)
+admin.site.register(models.MenuTwo, MenuTwoAdmin)

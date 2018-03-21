@@ -22,9 +22,11 @@ sshpass -p 123456 ssh root@192.168.1.1
 #依赖包
 sshpass
 paramiko
-theadpool
+threadpool
 gevent并发使用协程
 
+html5lib
+GateOne
 from concurrent.futures import ThreadPoolExecute
 
 #JS变量不能传递给模板变量,要当作参数传递
@@ -34,3 +36,5 @@ $.getJson("{%url 'task_reslut' %}",{"task_id":task_id},funcion(callback){
  }
 })
 }
+
+openssl req -new -x509 -nodes -out server.crt -keyout server.key
