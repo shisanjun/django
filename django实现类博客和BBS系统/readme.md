@@ -114,7 +114,7 @@
 		python manage.py makemigrations  
 		python manage.py migrate   
 	运行程序：
-		python培训作业/DAY18-李祥-博客/bin/EdmureBlog/manage.py runserver 127.0.0.1:8000
+		python培训作业/DAY18--博客/bin/EdmureBlog/manage.py runserver 127.0.0.1:8000
 	           
 
 ###4. 测试
